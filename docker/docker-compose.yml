@@ -1,0 +1,28 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  server:
+    build: ../server
+    container_name: server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+
+  static:
+    build: ../static
+    container_name: static
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+
+volumes:
+  mongo-data:

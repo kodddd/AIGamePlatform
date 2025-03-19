@@ -1,0 +1,12 @@
+# 定义默认任务
+default: run
+
+# 运行后端
+run:
+    @echo "Starting the backend server..."
+    go run main.go
+
+# 清理生成的文件（可选）
+clean:
+    @echo "Cleaning up..."
+    rm -f server

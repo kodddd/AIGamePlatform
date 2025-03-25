@@ -6,6 +6,7 @@ import Layout from "./components/Layout";
 import Register from "./account/RegisterPage";
 import StoryExpander from "./function/StoryExpander/StoryExpander";
 import VisualWorkshop from "./function/VisualWorkshop/VisualWorkshop";
+import FunctionLayout from "./components/FunctionLayout";
 
 function AppRouter() {
   return (
@@ -16,6 +17,8 @@ function AppRouter() {
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/register" element={<Register />} />
+        </Route>
+        <Route element={<FunctionLayout />}>
           <Route path="/story-expander" element={<StoryExpander />} />
           <Route path="/visual-workshop" element={<VisualWorkshop />} />
         </Route>

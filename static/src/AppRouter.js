@@ -4,7 +4,8 @@ import Home from "./base/HomePage";
 import NotFound from "./base/NotFound";
 import Layout from "./components/Layout";
 import Register from "./account/RegisterPage";
-import StoryExpander from "./function/StoryExpander";
+import StoryExpander from "./function/StoryExpander/StoryExpander";
+import VisualWorkshop from "./function/VisualWorkshop/VisualWorkshop";
 
 function AppRouter() {
   return (
@@ -16,6 +17,7 @@ function AppRouter() {
           <Route path="*" element={<NotFound />} />
           <Route path="/register" element={<Register />} />
           <Route path="/story-expander" element={<StoryExpander />} />
+          <Route path="/visual-workshop" element={<VisualWorkshop />} />
         </Route>
       </Routes>
     </Router>

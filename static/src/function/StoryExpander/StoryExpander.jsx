@@ -8,6 +8,7 @@ import {
   FiCopy,
   FiRefreshCw,
   FiSave,
+  FiEdit,
 } from "react-icons/fi";
 
 const StoryExpander = () => {
@@ -20,12 +21,15 @@ const StoryExpander = () => {
     characters: [],
     dialogues: [],
   });
+  const [interactionMode, setInteractionMode] = useState(null);
+  const [interactionInput, setInteractionInput] = useState("");
   const [settings, setSettings] = useState({
     creativity: 0.7,
     detailLevel: "medium",
     genre: "fantasy",
   });
-
+  const [activeTab, setActiveTab] = useState("background"); // 新增：当前激活的继续对话tab
+  const [continuationPrompt, setContinuationPrompt] = useState("");
   const handleGenerate = () => {
     if (!inputText.trim()) return;
 
@@ -112,6 +116,157 @@ const StoryExpander = () => {
         setSaveSuccess(false);
       }, 3000);
     }, 1500);
+  };
+  const startInteraction = (mode) => {
+    setInteractionMode(mode);
+    setInteractionInput("");
+  };
+  const cancelInteraction = () => {
+    setInteractionMode(null);
+    setInteractionInput("");
+  };
+  const handleContinueGeneration = (type, customPrompt) => {
+    const prompt = customPrompt || interactionInput;
+    if ((!prompt || !prompt.trim()) && type !== "dialogues") return;
+
+    setIsGenerating(true);
+    setActiveTab(type);
+
+    // 模拟API调用
+    setTimeout(() => {
+      const newContent = generateContinuation(type, prompt);
+      setOutput((prev) => ({
+        ...prev,
+        [type]:
+          type === "characters" || type === "dialogues"
+            ? [...prev[type], ...newContent]
+            : prev[type] + "\n\n" + newContent,
+      }));
+      setInteractionMode(null);
+      setInteractionInput("");
+      setIsGenerating(false);
+    }, 2000);
+  };
+  // 世界观交互面板
+  const WorldviewInteractionPanel = () => (
+    <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+      <h3 className="font-medium mb-3 flex items-center">
+        <FiEdit className="mr-2" /> 扩写世界观
+      </h3>
+      <textarea
+        value={interactionInput}
+        onChange={(e) => setInteractionInput(e.target.value)}
+        placeholder="输入你想扩展的内容方向（例如：请详细描述这个世界的魔法体系）"
+        className="w-full h-24 px-3 py-2 border border-gray-300 rounded-md mb-3"
+      />
+      <div className="flex justify-end space-x-2">
+        <button
+          onClick={cancelInteraction}
+          className="px-4 py-2 border border-gray-300 rounded-md"
+        >
+          取消
+        </button>
+        <button
+          onClick={() => handleContinueGeneration("background")}
+          disabled={!interactionInput.trim() || isGenerating}
+          className={`px-4 py-2 rounded-md text-white ${
+            !interactionInput.trim() || isGenerating
+              ? "bg-indigo-300 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-700"
+          }`}
+        >
+          {isGenerating ? "生成中..." : "提交扩写"}
+        </button>
+      </div>
+    </div>
+  );
+  // 角色交互面板
+  const CharacterInteractionPanel = () => (
+    <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+      <h3 className="font-medium mb-3 flex items-center">
+        <FiEdit className="mr-2" /> 新增角色
+      </h3>
+      <textarea
+        value={interactionInput}
+        onChange={(e) => setInteractionInput(e.target.value)}
+        placeholder="描述你想创建的角色（例如：需要一个神秘的女巫角色，掌握古老的草药知识）"
+        className="w-full h-24 px-3 py-2 border border-gray-300 rounded-md mb-3"
+      />
+      <div className="flex justify-end space-x-2">
+        <button
+          onClick={cancelInteraction}
+          className="px-4 py-2 border border-gray-300 rounded-md"
+        >
+          取消
+        </button>
+        <button
+          onClick={() => handleContinueGeneration("characters")}
+          disabled={!interactionInput.trim() || isGenerating}
+          className={`px-4 py-2 rounded-md text-white ${
+            !interactionInput.trim() || isGenerating
+              ? "bg-indigo-300 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-700"
+          }`}
+        >
+          {isGenerating ? "生成中..." : "创建角色"}
+        </button>
+      </div>
+    </div>
+  );
+
+  const generateContinuation = (type, prompt) => {
+    const genre = settings.genre;
+    const basePrompt = prompt || "请继续扩展这部分内容";
+
+    switch (type) {
+      case "background":
+        return `根据开发者的要求"${basePrompt}"，故事世界进一步展开：${
+          genre === "fantasy"
+            ? "古老的预言揭示了新的危机，传说中的神器开始显现踪迹。"
+            : "公司内部的权力斗争逐渐浮出水面，新的势力加入了这场博弈。"
+        }`;
+
+      case "characters":
+        return [
+          {
+            name: genre === "fantasy" ? "塞伦" : "诺亚",
+            role: genre === "fantasy" ? "反派" : "中立者",
+            description:
+              genre === "fantasy"
+                ? "堕落的精灵王子，企图利用黑暗魔法重塑世界"
+                : "情报贩子，游走于各方势力之间",
+            motivation:
+              genre === "fantasy"
+                ? "报复将他放逐的精灵王国"
+                : "在混乱中谋取最大利益",
+          },
+        ];
+      case "dialogues":
+        return [
+          {
+            scene: genre === "fantasy" ? "命运的对峙" : "危险的交易",
+            lines: [
+              {
+                speaker: genre === "fantasy" ? "艾琳娜" : "凯特",
+                text:
+                  genre === "fantasy"
+                    ? "我不会让你毁掉这片土地！"
+                    : "这次交易的内容让我很不安...",
+              },
+              {
+                speaker: genre === "fantasy" ? "塞伦" : "诺亚",
+                text:
+                  genre === "fantasy"
+                    ? "太晚了，小法师。毁灭的种子早已播下！"
+                    : "在这个城市，不安才是常态，亲爱的。",
+              },
+            ],
+          },
+        ];
+
+      default:
+        return "";
+    }
   };
 
   const detailText = {
@@ -277,9 +432,9 @@ const StoryExpander = () => {
 
           {/* 输出区 */}
           <div className="lg:col-span-2 space-y-6">
-            {/* 背景故事 */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <div className="flex justify-between items-center mb-4">
+            {/* 背景故事区域 */}
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+              <div className="flex justify-between items-center p-6 border-b">
                 <h2 className="text-xl font-semibold flex items-center">
                   <FiBook className="mr-2" /> 背景故事
                 </h2>
@@ -292,38 +447,36 @@ const StoryExpander = () => {
                   </button>
                 )}
               </div>
-              {isGenerating && !output.background ? (
-                <div className="animate-pulse space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-full"></div>
-                  <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                </div>
-              ) : (
-                <p className="text-gray-700 whitespace-pre-line">
+
+              <div className="p-6">
+                <p className="text-gray-700 whitespace-pre-line mb-4">
                   {output.background || "生成结果将显示在这里..."}
                 </p>
-              )}
+
+                {interactionMode === "background" ? (
+                  <WorldviewInteractionPanel />
+                ) : (
+                  output.background && (
+                    <button
+                      onClick={() => startInteraction("background")}
+                      className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center"
+                    >
+                      <FiEdit className="mr-2" /> 扩写世界观
+                    </button>
+                  )
+                )}
+              </div>
             </div>
 
-            {/* 角色设定 */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4 flex items-center">
-                <FiUser className="mr-2" /> 角色设定
-              </h2>
-              {isGenerating && output.characters.length === 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[1, 2].map((i) => (
-                    <div
-                      key={i}
-                      className="animate-pulse p-4 border rounded-lg"
-                    >
-                      <div className="h-5 bg-gray-200 rounded w-1/3 mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
-                      <div className="h-3 bg-gray-200 rounded w-4/5"></div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
+            {/* 角色设定区域 */}
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+              <div className="flex justify-between items-center p-6 border-b">
+                <h2 className="text-xl font-semibold flex items-center">
+                  <FiUser className="mr-2" /> 角色设定
+                </h2>
+              </div>
+
+              <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {output.characters.map((char, index) => (
                     <div
@@ -342,7 +495,23 @@ const StoryExpander = () => {
                     </div>
                   ))}
                 </div>
-              )}
+
+                {interactionMode === "characters" ? (
+                  <CharacterInteractionPanel />
+                ) : (
+                  <button
+                    onClick={() => startInteraction("characters")}
+                    disabled={output.characters.length === 0}
+                    className={`mt-4 px-4 py-2 rounded-md flex items-center ${
+                      output.characters.length === 0
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                    }`}
+                  >
+                    <FiEdit className="mr-2" /> 新增角色
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* 对话树 */}

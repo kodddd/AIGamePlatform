@@ -23,6 +23,7 @@ const Home = () => {
       title: "AI视觉工坊",
       desc: "文字描述生成2D立绘/3D模型贴图，支持风格化参数调节",
       color: "from-green-500 to-emerald-400",
+      link: "/visual-workshop",
     },
     {
       icon: <FiLayers className="w-8 h-8" />,

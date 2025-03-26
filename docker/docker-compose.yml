@@ -1,28 +1,22 @@
-version: '3'
+version: "3.8"
+
 services:
   mongodb:
     image: mongo
-    container_name: mongodb
+    container_name: ai-game-mongo
     ports:
-      - "27017:27017"
+      - "27010:27017" # 主机端口:容器端口
     volumes:
-      - mongo-data:/data/db
-
-  server:
-    build: ../server
-    container_name: server
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mongodb
-
-  static:
-    build: ../static
-    container_name: static
-    ports:
-      - "3000:3000"
-    depends_on:
-      - server
+      - mongodb_data:/data/db # 数据持久化
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root # 可选：初始root用户
+      - MONGO_INITDB_ROOT_PASSWORD=example # 可选：root密码
+    restart: unless-stopped # 自动重启
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
-  mongo-data:
+  mongodb_data: # 声明数据卷

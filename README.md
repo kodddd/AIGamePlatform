@@ -25,3 +25,10 @@
 
 - 启动 `npm start`
 - 添加依赖 `npm install`
+
+### 后端
+
+`cd server`
+
+- 启动 `make run`
+- 添加依赖 `go get`

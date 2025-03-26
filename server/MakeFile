@@ -1,12 +1,42 @@
-# 定义默认任务
-default: run
+# Makefile for Go backend service
 
-# 运行后端
+# 定义变量
+APP_NAME := game-platform
+GO := go
+GO_MODULE := AIGamePlatform/server
+PORT ?= 8080
+BINARY_DIR := bin
+
+.PHONY: all run build clean fmt mod errcheck
+
+# 默认目标
+all: build
+
+# 运行开发服务器
 run:
-    @echo "Starting the backend server..."
-    go run main.go
+	@echo "Starting server on port $(PORT)..."
+	$(GO) run $(GO_MODULE) --port $(PORT)
 
-# 清理生成的文件（可选）
+# 构建可执行文件
+build:
+	@echo "Building $(APP_NAME)..."
+	@mkdir -p $(BINARY_DIR)
+	$(GO) build -o $(BINARY_DIR)/$(APP_NAME) $(GO_MODULE)
+
+# 清理构建文件
 clean:
-    @echo "Cleaning up..."
-    rm -f server
+	@echo "Cleaning..."
+	@rm -rf $(BINARY_DIR)
+
+# 格式化代码
+fmt:
+	$(GO) fmt ./...
+
+# 整理依赖
+mod:
+	$(GO) mod tidy
+
+# 错误检查
+errcheck:
+	@go install github.com/kisielk/errcheck@latest
+	errcheck ./...

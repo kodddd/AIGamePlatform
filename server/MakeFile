@@ -1,34 +1,32 @@
-# Makefile for Go backend service
 
 # 定义变量
 APP_NAME := game-platform
 GO := go
-GO_MODULE := AIGamePlatform/server
 PORT ?= 8080
-BINARY_DIR := bin
+BINARY_DIR := ../bin  # 可执行文件输出到上级bin目录
 
 .PHONY: all run build clean fmt mod errcheck
 
 # 默认目标
 all: build
 
-# 运行开发服务器
+# 运行开发服务器（使用当前目录的main.go）
 run:
-	@echo "Starting server on port $(PORT)..."
-	$(GO) run $(GO_MODULE) --port $(PORT)
+	@echo "🚀 Starting server on port $(PORT)..."
+	$(GO) run . --port $(PORT)
 
-# 构建可执行文件
+# 构建可执行文件（输出到项目根目录的bin文件夹）
 build:
-	@echo "Building $(APP_NAME)..."
+	@echo "📦 Building $(APP_NAME)..."
 	@mkdir -p $(BINARY_DIR)
-	$(GO) build -o $(BINARY_DIR)/$(APP_NAME) $(GO_MODULE)
+	$(GO) build -o $(BINARY_DIR)/$(APP_NAME) .
 
 # 清理构建文件
 clean:
-	@echo "Cleaning..."
+	@echo "🧹 Cleaning..."
 	@rm -rf $(BINARY_DIR)
 
-# 格式化代码
+# 格式化代码（递归格式化当前目录）
 fmt:
 	$(GO) fmt ./...
 
@@ -38,5 +36,10 @@ mod:
 
 # 错误检查
 errcheck:
-	@go install github.com/kisielk/errcheck@latest
+	@$(GO) install github.com/kisielk/errcheck@latest
 	errcheck ./...
+
+# 新增：快速测试接口
+test:
+	@echo "🛜 Testing /ping endpoint..."
+	@curl -s http://localhost:$(PORT)/ping | jq . 2>/dev/null || echo "⚠️ 请先启动服务（make run）"

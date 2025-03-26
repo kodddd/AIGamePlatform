@@ -3,7 +3,6 @@ package mongo
 import (
 	"context"
 	"fmt"
-	"os"
 	"sync"
 	"time"
 
@@ -13,6 +12,9 @@ import (
 
 const (
 	DB_Name = "ai-game" // 默认数据库名称
+	myMongoURL = "localhost:27017" 
+	myUserName = "root"    // 如果需要认证
+    myPassword = "example"    // 如果需要认证
 )
 
 var (
@@ -22,34 +24,35 @@ var (
 
 // Init 初始化 MongoDB 客户端连接
 func Init() {
-	initMutex.Lock()
-	defer initMutex.Unlock()
+    initMutex.Lock()
+    defer initMutex.Unlock()
 
-	if singleClient != nil {
-		return
-	}
+    if singleClient != nil {
+        return
+    }
 
-	mongodbUrl := os.Getenv("MONGODB_URL")
-	if mongodbUrl == "" {
-		panic("MONGODB_URL 环境变量未设置")
-	}
+    // 构造连接字符串
+    var uri string
+    if myUserName != "" && myPassword != "" {
+        uri = fmt.Sprintf("mongodb://%s:%s@%s", myUserName, myPassword, myMongoURL)
+    } else {
+        uri = fmt.Sprintf("mongodb://%s", myMongoURL)
+    }
 
-	mongodbUrl = fmt.Sprintf("mongodb://%s", mongodbUrl)
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+    client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
+    if err != nil {
+        panic(fmt.Sprintf("MongoDB连接失败: %v", err))
+    }
 
+    // 建议添加ping检查
+    if err = client.Ping(ctx, nil); err != nil {
+        panic(fmt.Sprintf("MongoDB连接测试失败: %v", err))
+    }
 
-	client, err := mongo.Connect(
-	ctx,
-	options.Client().ApplyURI(mongodbUrl),
-)
-
-	if err != nil {
-		panic(fmt.Sprintf("MongoDB连接失败: %v", err))
-	}
-
-	singleClient = client
+    singleClient = client
 }
 
 type Client struct {

@@ -21,11 +21,15 @@
 
 ### 数据库
 
+v8.0.5
+
 `cd docker`
 
 - 启动 `docker-compose up -d`
 
 ### 前端
+
+v19.1.0
 
 `cd static`
 
@@ -33,6 +37,8 @@
 - 添加依赖 `npm install`
 
 ### 后端
+
+v1.24.1
 
 `cd server`
 

@@ -2,6 +2,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiUser, FiMail, FiLock, FiArrowRight } from "react-icons/fi";
+import { useAuth } from "../../api/auth/context";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +15,8 @@ const Register = () => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,15 +43,37 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      setIsLoading(true);
-      // 模拟注册请求
-      setTimeout(() => {
-        alert("注册成功！");
-        setIsLoading(false);
-      }, 1500);
+    if (!validateForm()) {
+      return;
+    }
+    setIsLoading(true);
+
+    try {
+      // 调用注册接口
+      const user = await register(formData);
+
+      // 注册成功处理
+      console.log("注册成功", user);
+      toast.success(`注册成功，欢迎${user.userName}`);
+      navigate("/");
+    } catch (error) {
+      // 错误处理
+      console.error("注册失败:", error);
+
+      // 根据错误类型显示不同提示
+      const errorMessage =
+        error.response?.data.message || error.message || "注册失败，请稍后重试";
+
+      toast.error(errorMessage);
+
+      // 如果是字段错误，更新错误状态
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -1,11 +1,14 @@
-// src/components/Navbar.js
 import { Link, NavLink } from "react-router-dom";
-import { FiHome, FiUser, FiSettings, FiLogIn } from "react-icons/fi"; // 使用react-icons
-const Navbar = () => {
+import { FiHome, FiUser, FiSettings, FiLogIn, FiLogOut } from "react-icons/fi";
+import { useAuth } from "../api/auth/context";
+
+const Navbar = ({ showUserMenu = true }) => {
+  const { user, isAuthenticated, logout } = useAuth();
+
   return (
     <header className="bg-black text-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Logo部分（点击返回首页） */}
+        {/* Logo部分 */}
         <Link
           to="/"
           className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
@@ -17,17 +20,34 @@ const Navbar = () => {
         </Link>
 
         {/* 导航菜单 */}
-        <nav className="hidden md:flex space-x-1">
-          <NavItem to="/profile" icon={<FiUser />} text="个人中心" />
-          <NavItem to="/settings" icon={<FiSettings />} text="设置" />
-          <NavItem to="/login" icon={<FiLogIn />} text="登录" />
-        </nav>
+        {showUserMenu && (
+          <nav className="hidden md:flex space-x-1">
+            {isAuthenticated ? (
+              <>
+                <NavItem
+                  to="/profile"
+                  icon={<FiUser />}
+                  text={user?.userName || "个人中心"}
+                />
+                <NavItem to="/settings" icon={<FiSettings />} text="设置" />
+                <button
+                  onClick={logout}
+                  className="flex items-center px-4 py-2 rounded-md transition-all hover:bg-gray-800 hover:text-gray-200"
+                >
+                  <FiLogOut className="mr-2" />
+                  退出
+                </button>
+              </>
+            ) : (
+              <NavItem to="/login" icon={<FiLogIn />} text="登录" />
+            )}
+          </nav>
+        )}
       </div>
     </header>
   );
 };
 
-// 导航项子组件
 const NavItem = ({ to, icon, text }) => (
   <NavLink
     to={to}

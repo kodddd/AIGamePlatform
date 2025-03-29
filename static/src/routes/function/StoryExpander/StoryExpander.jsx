@@ -10,6 +10,7 @@ import {
   FiSave,
   FiEdit,
 } from "react-icons/fi";
+import { useAuth } from "../../../api/auth/context";
 
 const StoryExpander = () => {
   const [inputText, setInputText] = useState("");
@@ -30,6 +31,10 @@ const StoryExpander = () => {
   });
   const [activeTab, setActiveTab] = useState("background"); // 新增：当前激活的继续对话tab
   const [continuationPrompt, setContinuationPrompt] = useState("");
+  const { user, isAuthenticated, logout } = useAuth();
+  if (!isAuthenticated) {
+    return <p>请先登录</p>;
+  }
   const handleGenerate = () => {
     if (!inputText.trim()) return;
 

@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { RiGamepadLine } from "react-icons/ri";
+import { useAuth } from "../../api/auth/context";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
+const defaultFormData = { email: "", username: "", password: "" };
 
 const Login = () => {
   const [loginMethod, setLoginMethod] = useState("email"); // 'email' 或 'username'
-  const [formData, setFormData] = useState({
-    email: "",
-    username: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState(defaultFormData);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const validateForm = () => {
     const newErrors = {};
@@ -30,15 +33,23 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
       setIsLoading(true);
-      // 模拟登录请求
-      setTimeout(() => {
-        alert(`使用${loginMethod === "email" ? "邮箱" : "用户名"}登录成功！`);
+      try {
+        const user = await login(formData);
+        toast.success(`登陆成功，欢迎${user.userName}`);
+        navigate("/");
+      } catch (error) {
+        const errorMessage =
+          error.response?.data.message ||
+          error.message ||
+          "注册失败，请稍后重试";
+        toast.error(errorMessage);
+      } finally {
         setIsLoading(false);
-      }, 1500);
+      }
     }
   };
 
@@ -72,7 +83,10 @@ const Login = () => {
           <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
             <button
               type="button"
-              onClick={() => setLoginMethod("email")}
+              onClick={() => {
+                setLoginMethod("email");
+                setFormData(defaultFormData);
+              }}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium ${
                 loginMethod === "email"
                   ? "bg-white shadow-sm text-indigo-600"
@@ -83,7 +97,10 @@ const Login = () => {
             </button>
             <button
               type="button"
-              onClick={() => setLoginMethod("username")}
+              onClick={() => {
+                setLoginMethod("username");
+                setFormData(defaultFormData);
+              }}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium ${
                 loginMethod === "username"
                   ? "bg-white shadow-sm text-indigo-600"

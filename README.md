@@ -19,6 +19,12 @@
 
 ## 使用教程
 
+### 数据库
+
+`cd docker`
+
+- 启动 `docker-compose up -d`
+
 ### 前端
 
 `cd static`

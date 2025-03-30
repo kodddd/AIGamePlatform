@@ -12,7 +12,8 @@ func main() {
 	r := gin.Default()
 
 	// 加载 API 路由
-	handler.LoadAPIRoutes(r)
+	handler.LoadPublicRoutes(r)
+	handler.LoadProtectedRoutes(r)
 
 	// 启动服务器
 	port := ":8080" // 默认端口

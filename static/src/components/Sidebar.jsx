@@ -14,13 +14,13 @@ const Sidebar = () => {
     <div className="w-48 h-[calc(100vh-4rem)] bg-gray-800 text-white shadow-lg flex-shrink-0 sticky top-16 z-40">
       <nav className="p-4">
         {/* 返回按钮 */}
-        <button
+        {/* <button
           onClick={() => navigate(-1)}
           className="flex items-center w-full p-3 mb-4 rounded-lg hover:bg-gray-700 text-gray-300 transition-colors"
         >
           <FiArrowLeft className="mr-3" />
           返回
-        </button>
+        </button> */}
 
         <ul className="space-y-2">
           <li>

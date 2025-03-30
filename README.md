@@ -34,7 +34,8 @@ React v19.1.0
 `cd static`
 
 - 启动 `npm start`
-- 添加依赖 `npm install`
+- 安装当前依赖(第一次使用) `npm install`
+- 添加指定依赖 `npm install your-dependency`
 
 ### 后端
 
@@ -43,4 +44,5 @@ Go v1.24.1
 `cd server`
 
 - 启动 `make run`
-- 添加依赖 `go get`
+- 安装当前依赖(第一次使用) `go mod tidy`
+- 添加指定依赖 `go get your-dependency`

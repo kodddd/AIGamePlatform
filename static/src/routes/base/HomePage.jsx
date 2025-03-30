@@ -82,7 +82,7 @@ const Home = () => {
         {/* 行动按钮 */}
         <div className="flex justify-center space-x-4 mb-24">
           <Link
-            to="/register"
+            to="/story-expander"
             className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg font-medium text-lg hover:shadow-lg transition-all hover:scale-105"
           >
             立即体验

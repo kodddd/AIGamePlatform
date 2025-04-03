@@ -6,27 +6,30 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-type contextKey string
+type ContextKey string
 
 const(
-	 keyGinContext contextKey ="gin_context"
+	 KeyGinContext ContextKey ="gin_context"
+	 KeyUserID     ContextKey = "user_id"
 )
 
 func GetContextFromGin(c *gin.Context) (context.Context,error){
 	val, exists := c.Get("ctxKey")
-	if !exists {
-		return nil, fmt.Errorf("context not set in gin")
+	if !exists{
+		ctx := context.WithValue(c.Request.Context(), KeyGinContext, c)
+        c.Set("ctxKey", ctx)
+		return ctx,nil
+	}else{
+		ctx, ok := val.(context.Context)
+		if !ok {
+			return nil, fmt.Errorf("invalid context type")
+		}
+		return ctx, nil
 	}
-	
-	ctx, ok := val.(context.Context)
-	if !ok {
-		return nil, fmt.Errorf("invalid context type")
-	}
-	return ctx, nil
 }
 
 func GinContext(ctx context.Context) *gin.Context{
-	val:=ctx.Value(keyGinContext)
+	val:=ctx.Value(KeyGinContext)
 	if val==nil {
 		return nil
 	}
@@ -34,7 +37,7 @@ func GinContext(ctx context.Context) *gin.Context{
 }
 
 func GetUserID(ctx context.Context) (string, error) {
-	val := ctx.Value("userID")
+	val := ctx.Value(KeyUserID)
 	if val == nil {
 		return "", fmt.Errorf("userID not found in context")
 	}

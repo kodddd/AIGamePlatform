@@ -10,7 +10,7 @@ func NewId() Id {
 }
 
 type (
-	BasicResult struct {
+	BasicResponse struct {
 		Message string `json:"message"`
 		Code    int    `json:"code"`
 	}

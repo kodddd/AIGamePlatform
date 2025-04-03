@@ -11,7 +11,7 @@ import (
 
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// 从Header获取Token
+		// 1. 从Header获取Token
 		authHeader := c.GetHeader("Authorization")
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 		if tokenString == "" {
@@ -20,35 +20,37 @@ func JWTAuth() gin.HandlerFunc {
 			return
 		}
 
-		// 获取框架上下文
-		ctx, err := appctx.GetContextFromGin(c)
-		if err != nil {
-			_ = c.Error(err)
-			c.Abort()
-			return
+		// 2. 初始化上下文
+		ctx := c.Request.Context()
+		if ctx == nil {
+			ctx = context.Background()
 		}
+		
+		// 3. 存储gin.Context到标准上下文
+		ctx = context.WithValue(ctx, appctx.KeyGinContext, c)
+		c.Request = c.Request.WithContext(ctx)
 
-		// 解析Token
+		// 4. 解析Token
 		claims, err := utils.ParseToken(ctx, tokenString)
 		if err != nil {
-			_ = c.Error(appctx.NewUnauthorizedError("invalid token"))
+			_ = c.Error(appctx.NewUnauthorizedError("invalid token: " + err.Error()))
 			c.Abort()
 			return
 		}
 
-		// 存储userID到上下文
+		// 5. 获取并验证userID
 		userID, ok := claims["user_id"].(string)
-		if !ok {
-			_ = c.Error(appctx.NewUnauthorizedError("token missing user_id"))
+		if !ok || userID == "" {
+			_ = c.Error(appctx.NewUnauthorizedError("token missing valid user_id"))
 			c.Abort()
 			return
 		}
-
-		// 存入gin和标准库context
-		c.Set("userID", userID)
-		newCtx := context.WithValue(ctx, "userID", userID)
-		c.Set("ctxKey", newCtx) // 更新框架上下文
-
+		// 6. 存储userID到上下文
+		
+		// 存入标准context.Context
+		ctx = context.WithValue(ctx, appctx.KeyUserID, userID)
+		c.Request = c.Request.WithContext(ctx)
+		c.Set("ctxKey", ctx)
 		c.Next()
 	}
 }

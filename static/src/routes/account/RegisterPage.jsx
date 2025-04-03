@@ -29,6 +29,8 @@ const Register = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!formData.username.trim()) newErrors.username = "用户名不能为空";
+    else if (formData.username.length() > 15)
+      newErrors.username = "用户名不可超过15个字符";
     if (!formData.email) newErrors.email = "邮箱不能为空";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "请输入有效的邮箱地址";

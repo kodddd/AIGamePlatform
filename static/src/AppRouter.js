@@ -6,6 +6,7 @@ import Login from "./routes/account/LoginPage";
 import Home from "./routes/base/HomePage";
 import NotFound from "./routes/base/NotFound";
 import Register from "./routes/account/RegisterPage";
+import Profile from "./routes/account/ProfilePage";
 import StoryExpander from "./routes/function/StoryExpander/StoryExpander";
 import VisualWorkshop from "./routes/function/VisualWorkshop/VisualWorkshop";
 
@@ -80,8 +81,10 @@ function AppRouter() {
           <Route element={<FunctionLayout />}>
             <Route path="/story-expander" element={<StoryExpander />} />
             <Route path="/visual-workshop" element={<VisualWorkshop />} />
-            {/* <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} /> */}
+            {/* <Route path="/settings" element={<Settings />} /> */}
+          </Route>
+          <Route element={<Layout />}>
+            <Route path="/profile" element={<Profile />} />
           </Route>
         </Route>
       </Routes>

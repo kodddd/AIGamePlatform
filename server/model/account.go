@@ -1,6 +1,23 @@
 package model
 
 type (
+	Account struct {
+		UserName string `json:"userName" bson:"userName"`
+		Email    string `json:"email" bson:"email"`
+		Password string `json:"-" bson:"password"`
+	}
+
+	GetMeResult struct{
+		Code    int      `json:"code"`
+		Message string   `json:"message"`
+		User    *Account `json:"user,omitempty"`
+	}
+
+	GetMeResponse struct{
+		UserName string `json:"userName"`
+		Email    string `json:"email"`
+	}
+
 	LoginRequest struct {
 		UserName string `json:"userName" bson:"userName"`
 		Email    string `json:"email" bson:"email"`
@@ -39,13 +56,26 @@ type (
 		Email    string `json:"email"`
 	}
 
-	RegisterErrorResponse struct {
-		BasicErrorData
+	UpdateProfileRequest struct {
+		UserName string `json:"userName"`
+		Email string `json:"email"`
 	}
 
-	Account struct {
-		UserName string `json:"userName" bson:"userName"`
-		Email    string `json:"email" bson:"email"`
-		Password string `json:"-" bson:"password"`
+	UpdateProfileResult struct{
+		Code int `json:"code"`
+		Message string `json:"message"`
+		User *Account `json:"user"`
+	}
+	UpdateProfileResponse struct{
+		UserName string `json:"userName"`
+		Email string `json:"email"`
+	}
+	UpdatePasswordRequest struct{
+		CurrentPassword string `json:"currentPassword"`
+		NewPassword string `json:"newPassword"`
+	}
+	UpdatePasswordResult struct{
+		Code int `json:"code"`
+		Message string `json:"message"`
 	}
 )

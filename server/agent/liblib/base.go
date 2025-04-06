@@ -54,7 +54,7 @@ func randomString(n int) string {
 }
 
 // setToken 设置API请求所需的认证参数
-func (c *SSPClient) setToken() {
+func (c *SSPClient) setSignature() {
     if c.request == nil {
         return
     }

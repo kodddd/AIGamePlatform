@@ -61,7 +61,7 @@ type (
 	GetGraphResultData struct {
 		GenerateUuid     string  `json:"generateUuid"`     // 生成任务的UUID
 		GenerateStatus   int     `json:"generateStatus"`   // 生成状态
-		PercentCompleted float64     `json:"percentCompleted"` // 完成百分比
+		PercentCompleted float64 `json:"percentCompleted"` // 完成百分比
 		GenerateMsg      string  `json:"generateMsg"`      // 生成消息
 		PointsCost       int     `json:"pointsCost"`       // 本次任务消耗积分数
 		AccountBalance   int     `json:"accountBalance"`   // 账户剩余积分数

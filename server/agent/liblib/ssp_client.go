@@ -22,7 +22,7 @@ func (c *SSPClient) newRequest(ctx context.Context, method string, path string, 
 	}
 	c.request.Url(fmt.Sprintf("%s%s", c.apiUrl, path))
     
-    c.setToken()
+    c.setSignature()
     
     return c.request
 }

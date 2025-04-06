@@ -114,7 +114,7 @@ const Profile = () => {
     if (validateForm()) {
       try {
         // 调用更新用户信息的API
-        await userApi.update({
+        await userApi.updateProfile({
           username: tempUser.userName,
           email: tempUser.email,
         });

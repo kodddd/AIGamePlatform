@@ -17,36 +17,36 @@ const (
 	AccountColletion = "account"
 )
 
-func GetMe(ctx context.Context)(*model.GetMeResult,error){
+func GetMe(ctx context.Context) (*model.GetMeResult, error) {
 	userID, err := appctx.GetUserID(ctx) // 从上下文获取userID
-	if err!=nil{
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 	objID, err := primitive.ObjectIDFromHex(userID)
-    if err != nil {
-        return nil,err
-    }
-	client:=mongo.GetClient(ctx)
+	if err != nil {
+		return nil, err
+	}
+	client := mongo.GetClient(ctx)
 	var account model.Account
-	client.FindOne(AccountColletion,bson.M{"_id":objID},&account)
+	client.FindOne(AccountColletion, bson.M{"_id": objID}, &account)
 	return &model.GetMeResult{
-		Code: 200,Message: "success",User: &account,
-	},nil
+		Code: 200, Message: "success", User: &account,
+	}, nil
 }
 
-func duplicatedUsernameOrEmail(client *mongo.Client,userName string,email string,userID primitive.ObjectID)bool{
+func duplicatedUsernameOrEmail(client *mongo.Client, userName string, email string, userID primitive.ObjectID) bool {
 	var filter bson.M
-	if userID==primitive.NilObjectID{
-		fmt.Println("id:",userID)
-		filter=bson.M{
+	if userID == primitive.NilObjectID {
+		fmt.Println("id:", userID)
+		filter = bson.M{
 			"$or": []bson.M{
 				{"userName": userName},
 				{"email": email},
 			},
 		}
-	}else{
-		fmt.Println("id:",userID)
-		filter=bson.M{
+	} else {
+		fmt.Println("id:", userID)
+		filter = bson.M{
 			"$and": []bson.M{
 				{
 					"_id": bson.M{"$ne": userID}, // _id 不等于 userID
@@ -61,9 +61,9 @@ func duplicatedUsernameOrEmail(client *mongo.Client,userName string,email string
 		}
 	}
 	count, _ := client.FindCount(AccountColletion, filter)
-	if(count!=0) {
+	if count != 0 {
 		return true
-	}else {
+	} else {
 		return false
 	}
 }
@@ -88,8 +88,8 @@ func Login(ctx context.Context, request model.LoginRequest) (*model.LoginResult,
 		return &model.LoginResult{Code: 500, Message: "server error"}, err
 	}
 	if request.Password == account.Password {
-		id,_:=client.FindOneAndGetID(AccountColletion, bson.M{key: val})
-		token, err := utils.GenerateToken(ctx,id)
+		id, _ := client.FindOneAndGetID(AccountColletion, bson.M{key: val})
+		token, err := utils.GenerateToken(ctx, id)
 		if err != nil {
 			return &model.LoginResult{Code: 500, Message: "server error"}, err
 		}
@@ -104,8 +104,8 @@ func Login(ctx context.Context, request model.LoginRequest) (*model.LoginResult,
 }
 
 func Register(ctx context.Context, request *model.RegisterRequest) (*model.RegisterResult, error) {
-	client:=mongo.GetClient(ctx)
-	if duplicatedUsernameOrEmail(client,request.UserName,request.Email,primitive.NilObjectID) {
+	client := mongo.GetClient(ctx)
+	if duplicatedUsernameOrEmail(client, request.UserName, request.Email, primitive.NilObjectID) {
 		return &model.RegisterResult{Code: 409, Message: "duplicated user name or email"}, nil
 	}
 	client.Insert(AccountColletion, model.Account(*request))
@@ -116,47 +116,47 @@ func Register(ctx context.Context, request *model.RegisterRequest) (*model.Regis
 		Token: "testToken"}, nil
 }
 
-func UpdateProfile(ctx context.Context,request *model.UpdateProfileRequest)(*model.UpdateProfileResult,error){
+func UpdateProfile(ctx context.Context, request *model.UpdateProfileRequest) (*model.UpdateProfileResult, error) {
 	userID, err := appctx.GetUserID(ctx) // 从上下文获取userID
-	if err!=nil{
-		return nil,err
-	}
-	objID, err := primitive.ObjectIDFromHex(userID)
-    if err != nil {
-        return nil,err
-    }
-	client:=mongo.GetClient(ctx)
-	if duplicatedUsernameOrEmail(client,request.UserName,request.Email,objID){
-		return &model.UpdateProfileResult{Code:409,Message: "duplicated user name or email"},nil
-	}
-	var oldAccount model.Account
-	client.FindOne(AccountColletion,bson.M{"_id":objID},&oldAccount)
-	newAccount:=oldAccount
-	newAccount.UserName=request.UserName
-	newAccount.Email=request.Email
-	client.ReplaceOne(AccountColletion,bson.M{"_id":objID},newAccount)
-	return &model.UpdateProfileResult{Code:200,Message:"update profile success",User: &model.Account{
-		UserName: newAccount.UserName,
-		Email:    newAccount.Email,
-	}},nil
-}
-
-func UpdatePassword(ctx context.Context,request *model.UpdatePasswordRequest)(*model.UpdatePasswordResult,error){
-	userID, err := appctx.GetUserID(ctx) // 从上下文获取userID
-	if err!=nil{
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 	objID, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	client:=mongo.GetClient(ctx)
+	client := mongo.GetClient(ctx)
+	if duplicatedUsernameOrEmail(client, request.UserName, request.Email, objID) {
+		return &model.UpdateProfileResult{Code: 409, Message: "duplicated user name or email"}, nil
+	}
 	var oldAccount model.Account
-	client.FindOne(AccountColletion,bson.M{"_id":objID},&oldAccount)
-	if oldAccount.Password!=request.CurrentPassword{
-		return &model.UpdatePasswordResult{Code:403,Message:"wrong password"},nil
+	client.FindOne(AccountColletion, bson.M{"_id": objID}, &oldAccount)
+	newAccount := oldAccount
+	newAccount.UserName = request.UserName
+	newAccount.Email = request.Email
+	client.ReplaceOne(AccountColletion, bson.M{"_id": objID}, newAccount)
+	return &model.UpdateProfileResult{Code: 200, Message: "update profile success", User: &model.Account{
+		UserName: newAccount.UserName,
+		Email:    newAccount.Email,
+	}}, nil
+}
+
+func UpdatePassword(ctx context.Context, request *model.UpdatePasswordRequest) (*model.UpdatePasswordResult, error) {
+	userID, err := appctx.GetUserID(ctx) // 从上下文获取userID
+	if err != nil {
+		return nil, err
 	}
-	oldAccount.Password=request.NewPassword
-	client.ReplaceOne(AccountColletion,bson.M{"_id":objID},oldAccount)
-	return &model.UpdatePasswordResult{Code:200,Message:"update password success"},nil
+	objID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return nil, err
+	}
+	client := mongo.GetClient(ctx)
+	var oldAccount model.Account
+	client.FindOne(AccountColletion, bson.M{"_id": objID}, &oldAccount)
+	if oldAccount.Password != request.CurrentPassword {
+		return &model.UpdatePasswordResult{Code: 403, Message: "wrong password"}, nil
+	}
+	oldAccount.Password = request.NewPassword
+	client.ReplaceOne(AccountColletion, bson.M{"_id": objID}, oldAccount)
+	return &model.UpdatePasswordResult{Code: 200, Message: "update password success"}, nil
 }

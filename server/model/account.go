@@ -7,13 +7,13 @@ type (
 		Password string `json:"-" bson:"password"`
 	}
 
-	GetMeResult struct{
+	GetMeResult struct {
 		Code    int      `json:"code"`
 		Message string   `json:"message"`
 		User    *Account `json:"user,omitempty"`
 	}
 
-	GetMeResponse struct{
+	GetMeResponse struct {
 		UserName string `json:"userName"`
 		Email    string `json:"email"`
 	}
@@ -58,24 +58,24 @@ type (
 
 	UpdateProfileRequest struct {
 		UserName string `json:"userName"`
-		Email string `json:"email"`
+		Email    string `json:"email"`
 	}
 
-	UpdateProfileResult struct{
-		Code int `json:"code"`
-		Message string `json:"message"`
-		User *Account `json:"user"`
+	UpdateProfileResult struct {
+		Code    int      `json:"code"`
+		Message string   `json:"message"`
+		User    *Account `json:"user"`
 	}
-	UpdateProfileResponse struct{
+	UpdateProfileResponse struct {
 		UserName string `json:"userName"`
-		Email string `json:"email"`
+		Email    string `json:"email"`
 	}
-	UpdatePasswordRequest struct{
+	UpdatePasswordRequest struct {
 		CurrentPassword string `json:"currentPassword"`
-		NewPassword string `json:"newPassword"`
+		NewPassword     string `json:"newPassword"`
 	}
-	UpdatePasswordResult struct{
-		Code int `json:"code"`
+	UpdatePasswordResult struct {
+		Code    int    `json:"code"`
 		Message string `json:"message"`
 	}
 )

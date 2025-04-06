@@ -17,7 +17,7 @@ func LoadPublicRoutes(router gin.IRouter) {
 // LoadProtectedRoutes 加载需要JWT认证的受保护路由
 func LoadProtectedRoutes(router gin.IRouter) {
 	router.Use(middleware.JWTAuth())
-	router.GET("/auth/me",appctx.GinHandler(GetMe))
+	router.GET("/auth/me", appctx.GinHandler(GetMe))
 	// 用户相关
 	router.POST("/user/profile/update", appctx.GinHandler(UpdateProfile))
 	router.POST("/user/password/update", appctx.GinHandler(UpdatePassword))

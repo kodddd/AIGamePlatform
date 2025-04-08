@@ -17,12 +17,13 @@ func LoadPublicRoutes(router gin.IRouter) {
 // LoadProtectedRoutes 加载需要JWT认证的受保护路由
 func LoadProtectedRoutes(router gin.IRouter) {
 	router.Use(middleware.JWTAuth())
-	router.GET("/auth/me", appctx.GinHandler(GetMe))
 	// 用户相关
+	router.GET("/auth/me", appctx.GinHandler(GetMe))
 	router.POST("/user/profile/update", appctx.GinHandler(UpdateProfile))
 	router.POST("/user/password/update", appctx.GinHandler(UpdatePassword))
 	// router.PUT("/profile", appctx.GinHandler(UpdateProfile))
 
-	// 其他受保护接口
+	// 功能相关
+	router.POST("/function/story-expander", appctx.GinHandler(ExpandStory))
 	// router.POST("/posts", appctx.GinHandler(CreatePost))
 }

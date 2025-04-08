@@ -25,8 +25,8 @@ const StoryExpander = () => {
   const [interactionMode, setInteractionMode] = useState(null);
   const [interactionInput, setInteractionInput] = useState("");
   const [settings, setSettings] = useState({
-    creativity: 0.7,
-    detailLevel: "medium",
+    creativity: 0,
+    casualty: 1,
     genre: "fantasy",
   });
   const [activeTab, setActiveTab] = useState("background"); // 新增：当前激活的继续对话tab
@@ -351,10 +351,11 @@ const StoryExpander = () => {
                   <option value="scifi">科幻</option>
                   <option value="modern">现代</option>
                   <option value="horror">恐怖</option>
+                  <option value="">其他</option>
                 </select>
               </div>
 
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   细节程度
                 </label>
@@ -379,6 +380,31 @@ const StoryExpander = () => {
                     </button>
                   ))}
                 </div>
+              </div> */}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  随机性 {settings.casualty.toFixed(1)}
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="2"
+                  step="0.1"
+                  value={settings.casualty}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      casualty: parseFloat(e.target.value),
+                    })
+                  }
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                />
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>集中</span>
+                  <span>平衡</span>
+                  <span>随机</span>
+                </div>
               </div>
 
               <div>
@@ -387,8 +413,8 @@ const StoryExpander = () => {
                 </label>
                 <input
                   type="range"
-                  min="0"
-                  max="1"
+                  min="-2"
+                  max="2"
                   step="0.1"
                   value={settings.creativity}
                   onChange={(e) =>

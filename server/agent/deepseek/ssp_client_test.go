@@ -8,9 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-
-func Test_Communicate(t *testing.T){
-	req:=&model.CommunicateRequest{
+func Test_Communicate(t *testing.T) {
+	req := &model.CommunicateRequest{
 		Model: "deepseek-chat",
 		Messages: []model.ChatMessage{
 			{
@@ -23,8 +22,8 @@ func Test_Communicate(t *testing.T){
 			},
 		},
 	}
-	c:= NewSSPClient()
-	res,err:=c.Communicate(context.Background(),req)
+	c := NewSSPClient()
+	res, err := c.Communicate(context.Background(), req)
 	assert.Nil(t, err)
 	OutputTestLog(t.Name(), res)
 }

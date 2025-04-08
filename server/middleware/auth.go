@@ -25,7 +25,7 @@ func JWTAuth() gin.HandlerFunc {
 		if ctx == nil {
 			ctx = context.Background()
 		}
-		
+
 		// 3. 存储gin.Context到标准上下文
 		ctx = context.WithValue(ctx, appctx.KeyGinContext, c)
 		c.Request = c.Request.WithContext(ctx)
@@ -46,7 +46,7 @@ func JWTAuth() gin.HandlerFunc {
 			return
 		}
 		// 6. 存储userID到上下文
-		
+
 		// 存入标准context.Context
 		ctx = context.WithValue(ctx, appctx.KeyUserID, userID)
 		c.Request = c.Request.WithContext(ctx)

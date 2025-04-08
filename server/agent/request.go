@@ -44,8 +44,8 @@ var (
 )
 
 const (
-	CONTENT_TYPE_JSON       = "application/json"
-	CONTENT_TYPE_FORM_DATA  = "multipart/form-data"
+	CONTENT_TYPE_JSON        = "application/json"
+	CONTENT_TYPE_FORM_DATA   = "multipart/form-data"
 	CONTENT_TYPE_URL_ENCODED = "application/x-www-form-urlencoded"
 )
 
@@ -82,10 +82,11 @@ func Put(ctx context.Context) *Request    { return NewRequest(ctx, "PUT") }
 func Delete(ctx context.Context) *Request { return NewRequest(ctx, "DELETE") }
 
 // 链式调用方法
-func (r *Request) Url(url string) *Request          { r.url = url; return r }
-func (r *Request) Header(key, value string) *Request { r.headers.Set(key, value); return r }
+func (r *Request) Url(url string) *Request               { r.url = url; return r }
+func (r *Request) Header(key, value string) *Request     { r.headers.Set(key, value); return r }
 func (r *Request) QueryParam(key, value string) *Request { r.queryParam.Add(key, value); return r }
-func (r *Request) Token(token string) *Request     { return r.Header("Authorization", token) }
+func (r *Request) Token(token string) *Request           { return r.Header("Authorization", token) }
+
 // 设置请求体
 func (r *Request) Json(data interface{}) *Request {
 	r.contentType = CONTENT_TYPE_JSON
@@ -173,19 +174,19 @@ func (r *Request) Do(result interface{}) (*http.Response, error) {
 
 // End 执行请求并处理响应（兼容旧版调用方式）
 func (r *Request) End(result interface{}) (*http.Response, error) {
-    // 构建请求
-    resp, err := r.Do(result)
-    if err != nil {
-        return resp, err
-    }
+	// 构建请求
+	resp, err := r.Do(result)
+	if err != nil {
+		return resp, err
+	}
 
-    // 兼容旧版行为：自动丢弃响应体
-    if result == nil {
-        defer resp.Body.Close()
-        _, _ = io.Copy(io.Discard, resp.Body)
-    }
-    
-    return resp, nil
+	// 兼容旧版行为：自动丢弃响应体
+	if result == nil {
+		defer resp.Body.Close()
+		_, _ = io.Copy(io.Discard, resp.Body)
+	}
+
+	return resp, nil
 }
 
 // 默认响应处理器
@@ -225,6 +226,6 @@ func maskURL(rawURL string) string {
 	return privatePattern.ReplaceAllString(rawURL, "$1=********")
 }
 
-func (r *Request )GetUrl() string{
+func (r *Request) GetUrl() string {
 	return r.url
 }

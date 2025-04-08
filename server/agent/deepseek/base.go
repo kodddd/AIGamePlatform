@@ -12,9 +12,9 @@ import (
 
 type (
 	ClientCore struct {
-		apiUrl string
-		apiKey string
-        request *agent.Request
+		apiUrl  string
+		apiKey  string
+		request *agent.Request
 	}
 
 	SSPClient struct {
@@ -22,25 +22,23 @@ type (
 	}
 )
 
-
-
 func NewClientCore() ClientCore {
-    envPath := utils.GetEnvPath()
-    err := godotenv.Load(envPath)
-    if err != nil {
-        log.Fatal("Failed to load .env:", err)
-    }
+	envPath := utils.GetEnvPath()
+	err := godotenv.Load(envPath)
+	if err != nil {
+		log.Fatal("Failed to load .env:", err)
+	}
 	return ClientCore{
 		apiKey: os.Getenv("deepseek_api_key"),
 		apiUrl: os.Getenv("deepseek_api_url"),
 	}
 }
 
-func (c*SSPClient)setToken() {
+func (c *SSPClient) setToken() {
 	if c.request == nil {
 		return
 	}
-	c.request.Token("Bearer "+c.apiKey)
+	c.request.Token("Bearer " + c.apiKey)
 }
 
 func OutputTestLog(funcName string, resp interface{}) {

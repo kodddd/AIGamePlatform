@@ -19,10 +19,10 @@ import (
 
 type (
 	ClientCore struct {
-		access   string
-		secret   string
-        apiUrl  string
-        request *agent.Request
+		access  string
+		secret  string
+		apiUrl  string
+		request *agent.Request
 	}
 
 	SSPClient struct {
@@ -31,15 +31,15 @@ type (
 )
 
 func NewClientCore() ClientCore {
-    envPath := utils.GetEnvPath()
-    err := godotenv.Load(envPath)
-    if err != nil {
-        log.Fatal("Failed to load .env:", err)
-    }
+	envPath := utils.GetEnvPath()
+	err := godotenv.Load(envPath)
+	if err != nil {
+		log.Fatal("Failed to load .env:", err)
+	}
 	return ClientCore{
 		secret: os.Getenv("liblib_secret_key"),
-        access: os.Getenv("liblib_access_key"),
-        apiUrl: os.Getenv("liblib_api_url"),
+		access: os.Getenv("liblib_access_key"),
+		apiUrl: os.Getenv("liblib_api_url"),
 	}
 }
 
@@ -55,36 +55,36 @@ func randomString(n int) string {
 
 // setToken 设置API请求所需的认证参数
 func (c *SSPClient) setSignature() {
-    if c.request == nil {
-        return
-    }
+	if c.request == nil {
+		return
+	}
 
-    // 1. 生成必要参数
-    timestamp := strconv.FormatInt(time.Now().UnixMilli(), 10)
-    nonce := randomString(10)
-    
-    // 2. 构建待签名字符串（格式：URI&Timestamp&SignatureNonce）
-    // 获取请求的URI路径（不含查询参数）
-    requestUrl := c.request.GetUrl() // 假设agent.Request有URL()方法获取完整URL
-    fmt.Println("requestUrl", requestUrl)
-    uriPath := "/"
-    if u, err := url.Parse(requestUrl); err == nil {
-        uriPath = u.Path
-    }
-    fmt.Println("uriPath", uriPath)
-    content := uriPath + "&" + timestamp + "&" + nonce
+	// 1. 生成必要参数
+	timestamp := strconv.FormatInt(time.Now().UnixMilli(), 10)
+	nonce := randomString(10)
 
-    // 3. 计算HMAC-SHA1签名
-    mac := hmac.New(sha1.New, []byte(c.secret))
-    mac.Write([]byte(content))
-    signature := base64.RawURLEncoding.EncodeToString(mac.Sum(nil))
+	// 2. 构建待签名字符串（格式：URI&Timestamp&SignatureNonce）
+	// 获取请求的URI路径（不含查询参数）
+	requestUrl := c.request.GetUrl() // 假设agent.Request有URL()方法获取完整URL
+	fmt.Println("requestUrl", requestUrl)
+	uriPath := "/"
+	if u, err := url.Parse(requestUrl); err == nil {
+		uriPath = u.Path
+	}
+	fmt.Println("uriPath", uriPath)
+	content := uriPath + "&" + timestamp + "&" + nonce
 
-    // 4. 添加认证参数到查询字符串
-    c.request.
-        QueryParam("AccessKey", c.access).
-        QueryParam("Signature", signature).
-        QueryParam("Timestamp", timestamp).
-        QueryParam("SignatureNonce", nonce)
+	// 3. 计算HMAC-SHA1签名
+	mac := hmac.New(sha1.New, []byte(c.secret))
+	mac.Write([]byte(content))
+	signature := base64.RawURLEncoding.EncodeToString(mac.Sum(nil))
+
+	// 4. 添加认证参数到查询字符串
+	c.request.
+		QueryParam("AccessKey", c.access).
+		QueryParam("Signature", signature).
+		QueryParam("Timestamp", timestamp).
+		QueryParam("SignatureNonce", nonce)
 }
 
 func OutputTestLog(funcName string, resp interface{}) {

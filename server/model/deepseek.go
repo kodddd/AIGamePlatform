@@ -1,10 +1,16 @@
 package model
 
+const (
+	DefaultDeepseekModel = "deepseek-chat"
+)
+
 type (
 	CommunicateRequest struct {
-		Model    string        `json:"model"`    // 模型名称，如 "deepseek-chat"
-		Messages []ChatMessage `json:"messages"` // 消息列表
-		Stream   bool          `json:"stream"`   // 是否流式输出
+		Model           string        `json:"model"`            // 模型名称，如 "deepseek-chat"
+		Messages        []ChatMessage `json:"messages"`         // 消息列表
+		Stream          bool          `json:"stream"`           // 是否流式输出
+		PresencePenalty float64       `json:"presence_penalty"` // 词汇惩罚系数
+		Temperature     float64       `json:"temperature"`      // 温度参数，控制输出的随机性
 	}
 	ChatMessage struct {
 		Role    string `json:"role"`    // 角色，如 "system"、"user"、"assistant"

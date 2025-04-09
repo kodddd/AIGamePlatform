@@ -18,7 +18,7 @@ func ExpandStory(ctx context.Context, request *model.ExpandStoryRequest) (*model
 			},
 			{
 				Role:    "system",
-				Content: `你是一名专业的游戏世界观架构师，正在处理一个`+request.Genre+`题材的设定扩写任务。请保持原始设定的核心思想不变扩展用户提供的文本`,
+				Content: `你是一名专业的游戏世界观架构师，正在处理一个` + request.Genre + `题材的设定扩写任务，请尽量契合题材的同时保持原始设定的核心思想不变扩展用户提供的文本`,
 			},
 		},
 		Temperature:     request.Casualty,

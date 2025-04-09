@@ -25,5 +25,6 @@ func LoadProtectedRoutes(router gin.IRouter) {
 
 	// 功能相关
 	router.POST("/function/story-expander", appctx.GinHandler(ExpandStory))
+	router.POST("/function/generate-picture", appctx.GinHandler(GeneratePicture))
 	// router.POST("/posts", appctx.GinHandler(CreatePost))
 }

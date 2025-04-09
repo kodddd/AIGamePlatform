@@ -1,7 +1,10 @@
 package model
 
 const (
-	TemplateUuid = "5d7e67009b344550bc1aa6ccbfa1d7f4"
+	TemplateUuid        = "5d7e67009b344550bc1aa6ccbfa1d7f4"
+	LibGenerateSuccess  = 5
+	LibGenerateFail     = 6
+	LibGenerateOverTime = 7
 )
 
 type (

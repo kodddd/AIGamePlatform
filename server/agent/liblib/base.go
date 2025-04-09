@@ -65,13 +65,11 @@ func (c *SSPClient) setSignature() {
 
 	// 2. 构建待签名字符串（格式：URI&Timestamp&SignatureNonce）
 	// 获取请求的URI路径（不含查询参数）
-	requestUrl := c.request.GetUrl() // 假设agent.Request有URL()方法获取完整URL
-	fmt.Println("requestUrl", requestUrl)
+	requestUrl := c.request.GetUrl()
 	uriPath := "/"
 	if u, err := url.Parse(requestUrl); err == nil {
 		uriPath = u.Path
 	}
-	fmt.Println("uriPath", uriPath)
 	content := uriPath + "&" + timestamp + "&" + nonce
 
 	// 3. 计算HMAC-SHA1签名

@@ -1,7 +1,9 @@
 package model
 
 const (
-	DefaultDeepseekModel = "deepseek-chat"
+	DefaultDeepseekModel           = "deepseek-chat"
+	DefaultDeepseekTemperature     = 1
+	DefaultDeepseekPresencePenalty = 0
 )
 
 type (

@@ -12,6 +12,7 @@ import VisualWorkshop from "./routes/function/VisualWorkshop/VisualWorkshop";
 
 import Layout from "./components/Layout";
 import FunctionLayout from "./components/FunctionLayout";
+import AssetLibrary from "./routes/function/AssetLibrary/AssetLibrary";
 
 /**
  * 认证保护路由
@@ -81,6 +82,7 @@ function AppRouter() {
           <Route element={<FunctionLayout />}>
             <Route path="/story-expander" element={<StoryExpander />} />
             <Route path="/visual-workshop" element={<VisualWorkshop />} />
+            <Route path="/asset-library" element={<AssetLibrary />} />
             {/* <Route path="/settings" element={<Settings />} /> */}
           </Route>
           <Route element={<Layout />}>

@@ -7,8 +7,8 @@ const Home = () => {
   const features = [
     {
       icon: <FiBook className="w-8 h-8" />,
-      title: "故事扩写引擎",
-      desc: "输入简单世界观梗概，自动生成完整的游戏背景故事、角色设定和对话树",
+      title: "世界扩写引擎",
+      desc: "输入简要世界观，AI将自动生成完整的游戏叙事素材",
       color: "from-purple-500 to-indigo-500",
       link: "/story-expander",
     },
@@ -21,15 +21,16 @@ const Home = () => {
     {
       icon: <FiImage className="w-8 h-8" />,
       title: "AI视觉工坊",
-      desc: "文字描述生成2D立绘/3D模型贴图，支持风格化参数调节",
+      desc: "通过文字描述生成角色立绘，支持多种艺术风格调节",
       color: "from-green-500 to-emerald-400",
       link: "/visual-workshop",
     },
     {
       icon: <FiLayers className="w-8 h-8" />,
-      title: "智能关卡设计",
-      desc: "基于游戏类型自动生成地图布局与敌人配置方案",
+      title: "世界观资源库",
+      desc: "集中管理所有世界观设定及其关联AI素材，实现跨模块素材智能调用",
       color: "from-amber-500 to-yellow-400",
+      link: "/asset-library",
     },
   ];
 

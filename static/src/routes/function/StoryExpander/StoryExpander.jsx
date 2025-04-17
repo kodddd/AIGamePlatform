@@ -131,7 +131,7 @@ const StoryExpander = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center">
-              <FiBook className="mr-2" /> 故事扩写引擎
+              <FiBook className="mr-2" /> 世界扩写引擎
             </h1>
             <p className="text-gray-600 mb-5">
               输入简要世界观，AI将自动生成完整的游戏叙事素材

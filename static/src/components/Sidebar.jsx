@@ -35,7 +35,7 @@ const Sidebar = () => {
               }
             >
               <FiBook className="mr-3" />
-              故事扩写引擎
+              世界扩写引擎
             </NavLink>
           </li>
           <li>
@@ -51,6 +51,21 @@ const Sidebar = () => {
             >
               <FiImage className="mr-3" />
               AI视觉工坊
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/asset-library"
+              className={({ isActive }) =>
+                `flex items-center p-3 rounded-lg transition-colors ${
+                  isActive
+                    ? "bg-blue-900 text-white"
+                    : "hover:bg-gray-700 text-gray-300"
+                }`
+              }
+            >
+              <FiImage className="mr-3" />
+              世界观资源库
             </NavLink>
           </li>
           {/* <li className="border-t border-gray-700 pt-2 mt-4">

@@ -120,7 +120,6 @@ func (r *Request) Do(result interface{}) (*http.Response, error) {
 			urlStr += "?" + query
 		}
 	}
-	fmt.Println("Request URL:", maskURL(urlStr))
 
 	// 构建请求体
 	var body io.Reader

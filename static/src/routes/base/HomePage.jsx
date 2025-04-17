@@ -1,6 +1,6 @@
 // src/pages/Home.jsx
 import { Link } from "react-router-dom";
-import { FiCode, FiBook, FiLayers, FiImage } from "react-icons/fi";
+import { FiCode, FiBook, FiLayers, FiImage, FiDatabase } from "react-icons/fi";
 import { RiRobotLine } from "react-icons/ri";
 
 const Home = () => {
@@ -26,7 +26,7 @@ const Home = () => {
       link: "/visual-workshop",
     },
     {
-      icon: <FiLayers className="w-8 h-8" />,
+      icon: <FiDatabase className="w-8 h-8" />,
       title: "世界观资源库",
       desc: "集中管理所有世界观设定及其关联AI素材，实现跨模块素材智能调用",
       color: "from-amber-500 to-yellow-400",

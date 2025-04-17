@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { FiHome, FiUser, FiSettings, FiLogIn, FiLogOut } from "react-icons/fi";
+import { FiFile, FiUser, FiSettings, FiLogIn, FiLogOut } from "react-icons/fi";
 import { useAuth } from "../api/auth/context";
 
 const Navbar = ({ showUserMenu = true }) => {
@@ -24,6 +24,7 @@ const Navbar = ({ showUserMenu = true }) => {
           <nav className="hidden md:flex space-x-1">
             {isAuthenticated ? (
               <>
+                <NavItem to="/docs" icon={<FiFile />} text="文档" />
                 <NavItem
                   to="/profile"
                   icon={<FiUser />}

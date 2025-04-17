@@ -5,6 +5,7 @@ import {
   FiArrowLeft,
   FiUser,
   FiSettings,
+  FiDatabase,
 } from "react-icons/fi";
 
 const Sidebar = () => {
@@ -64,7 +65,7 @@ const Sidebar = () => {
                 }`
               }
             >
-              <FiImage className="mr-3" />
+              <FiDatabase className="mr-3" />
               世界观资源库
             </NavLink>
           </li>

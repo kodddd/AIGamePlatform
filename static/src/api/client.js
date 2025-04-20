@@ -19,6 +19,9 @@ client.interceptors.response.use(
   (response) => response.data,
   (error) => {
     if (error.response) {
+      if (error.response.status == 401) {
+        clearToken();
+      }
       // 结构化错误信息
       const apiError = {
         status: error.response.status,

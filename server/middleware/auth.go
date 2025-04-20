@@ -4,6 +4,7 @@ import (
 	"AIGamePlatform/server/appctx"
 	"AIGamePlatform/server/utils"
 	"context"
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -33,8 +34,9 @@ func JWTAuth() gin.HandlerFunc {
 		// 4. 解析Token
 		claims, err := utils.ParseToken(ctx, tokenString)
 		if err != nil {
-			_ = c.Error(appctx.NewUnauthorizedError("invalid token: " + err.Error()))
-			c.Abort()
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "invalid token: " + err.Error(),
+			})
 			return
 		}
 

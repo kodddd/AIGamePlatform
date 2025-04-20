@@ -13,6 +13,8 @@ import {
 import { useAuth } from "../../../api/auth/context";
 import { storyExpanderApi } from "../../../api/storyExpander/storyExpanderApi";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { worldApi } from "../../../api/world/worldApi";
 
 const StoryExpander = () => {
   // 状态管理
@@ -23,16 +25,17 @@ const StoryExpander = () => {
     conversationCount: 0,
   });
   const [isSaving, setIsSaving] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
   const [settings, setSettings] = useState({
     creativity: 0,
     casualty: 1,
     genre: "奇幻",
   });
+  const [worldName, setWorldName] = useState("");
   const [isCopying, setIsCopying] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [continuePrompt, setContinuePrompt] = useState(""); // 继续对话的输入
   const [isContinuing, setIsContinuing] = useState(false); // 继续对话的加载状态
+  const navigate = useNavigate();
 
   // 认证检查
   const { user, isAuthenticated, logout } = useAuth();
@@ -72,6 +75,10 @@ const StoryExpander = () => {
       });
     } catch (error) {
       console.error("生成错误:", error);
+      if (error.status == 401) {
+        navigate("/login");
+        toast.error("登录过期请重新登录");
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -109,19 +116,24 @@ const StoryExpander = () => {
   // 保存到知识库处理函数
   const handleSaveToKnowledgeBase = async () => {
     if (!output.background || isSaving) return;
-
     setIsSaving(true);
-    setSaveSuccess(false);
 
     try {
-      // 实际保存API调用
-      // await yourSaveApiCall(output);
-      setSaveSuccess(true);
+      await worldApi.createWorld({
+        base_text: output.background,
+        world_name: worldName,
+        user_name: user.userName,
+      });
+      toast.success("保存成功！");
     } catch (error) {
-      console.error("保存错误:", error);
+      if (error.status == 400) {
+        toast.error("世界观名称已存在，请更换名称");
+      } else if (error.status == 401) {
+        toast.error("登录过期请重新登录");
+        navigate("/login");
+      }
     } finally {
       setIsSaving(false);
-      setTimeout(() => setSaveSuccess(false), 3000);
     }
   };
 
@@ -139,9 +151,18 @@ const StoryExpander = () => {
           </div>
 
           <div className="flex">
+            {/* 新增 world_name 输入框 */}
+            <input
+              type="text"
+              value={worldName}
+              onChange={(e) => setWorldName(e.target.value)}
+              placeholder="输入世界观名称"
+              className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mr-2 w-64"
+            />
+
             <button
               onClick={handleSaveToKnowledgeBase}
-              disabled={!output.background || isSaving}
+              disabled={!output.background || isSaving || !worldName}
               className={`px-4 py-2 rounded-md font-medium flex items-center ${
                 !output.background || isSaving
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -156,15 +177,10 @@ const StoryExpander = () => {
               ) : (
                 <>
                   <FiSave className="mr-2" />
-                  保存到知识库
+                  保存到资源库
                 </>
               )}
             </button>
-            {saveSuccess && (
-              <div className="ml-4 px-4 py-2 bg-green-100 text-green-800 rounded-md flex items-center">
-                保存成功！
-              </div>
-            )}
           </div>
         </div>
 
@@ -279,7 +295,7 @@ const StoryExpander = () => {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
                 <FiMessageSquare className="inline mr-2" />
-                扩写背景
+                扩写世界观
               </h2>
               {output.background && (
                 <div className="text-sm text-gray-500">

@@ -10,6 +10,8 @@ import {
 } from "react-icons/fi";
 import { FaPalette } from "react-icons/fa";
 import { visualWorkshopApi } from "../../../api/visualWorkshop/visualWorkshop";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const VisualWorkshop = () => {
   const [prompt, setPrompt] = useState("");
@@ -19,7 +21,7 @@ const VisualWorkshop = () => {
     style: "动漫风格",
     size: "square", // square, portrait, landscape
   });
-
+  const navigate = useNavigate();
   const canvasRef = useRef(null);
 
   const handleGenerate = async () => {
@@ -27,16 +29,23 @@ const VisualWorkshop = () => {
 
     setIsGenerating(true);
     setGeneratedImage(null);
-
-    const response = await visualWorkshopApi.generateImage({
-      text: prompt,
-      aspectRatio: settings.size,
-      style: settings.style,
-    });
-    setGeneratedImage({
-      url: response.url,
-    });
-    setIsGenerating(false);
+    try {
+      const response = await visualWorkshopApi.generateImage({
+        text: prompt,
+        aspectRatio: settings.size,
+        style: settings.style,
+      });
+      setGeneratedImage({
+        url: response.url,
+      });
+    } catch (error) {
+      if (error.status == 401) {
+        navigate("/login");
+        toast.error("登录过期请重新登录");
+      }
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleDownload = async () => {

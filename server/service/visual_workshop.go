@@ -22,7 +22,7 @@ func GeneratePicture(ctx context.Context, request *model.GeneratePictureRequest)
 			},
 			{
 				Role:    "system",
-				Content: "你是一名专业的AI提示词工程师，请根据用户提供的要求文本来生成英文的prompt提示词。注意，需要是纯粹的英文提示词，不包含任何别的信息，直接输出结果。",
+				Content: "你是一名专业的AI提示词工程师，请根据用户提供的文本来生成纯英文正向提示词文本。注意，请直接输出结果。",
 			},
 		},
 		Temperature:     model.DefaultDeepseekTemperature,

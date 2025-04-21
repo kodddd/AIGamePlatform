@@ -16,13 +16,15 @@ import {
 import { useAuth } from "../../../api/auth/context";
 import toast from "react-hot-toast";
 import { worldApi } from "../../../api/world/worldApi";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 
 const AssetLibrary = () => {
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [userName, setUserName] = useState(user?.userName || "");
   const [pageInfo, setPageInfo] = useState({
     page: 1,
@@ -31,7 +33,9 @@ const AssetLibrary = () => {
   useEffect(() => {
     setUserName(user?.userName || "");
   }, [user]);
-
+  const refreshData = () => {
+    queryClient.invalidateQueries(["userData", userName]);
+  };
   const { data: worlds } = useQuery({
     queryKey: ["userData", userName],
     queryFn: async () =>
@@ -45,9 +49,15 @@ const AssetLibrary = () => {
     return <p className="p-6 text-center">请先登录</p>;
   }
 
-  const handleDeleteWorld = (world_name) => {
+  const handleDeleteWorld = async (id) => {
     // 这里可以调用API删除世界观
-    toast.success("世界观已删除");
+    try {
+      await worldApi.deleteWorld({ id: id });
+      toast.success("世界观已删除");
+      refreshData();
+    } catch (error) {
+      toast.error("删除失败");
+    }
   };
 
   return (
@@ -81,9 +91,13 @@ const AssetLibrary = () => {
                         {world.world_name}
                       </h2>
                     </div>
-                    {/* <div className="text-sm text-gray-500">
-                      最后更新: {world.lastUpdated}
-                    </div> */}
+                    <div className="text-sm text-gray-500">
+                      最后更新:{" "}
+                      {format(
+                        new Date(world.last_updated * 1000),
+                        "yyyy-MM-dd HH:mm:ss"
+                      )}
+                    </div>
                   </div>
 
                   {/* 统计标签 */}
@@ -104,7 +118,7 @@ const AssetLibrary = () => {
                       <FiEdit2 className="mr-1" /> 编辑
                     </button>
                     <button
-                      onClick={() => handleDeleteWorld(world.world_name)}
+                      onClick={() => handleDeleteWorld(world.id)}
                       className="px-3 py-1 text-sm text-red-500 hover:bg-red-50 rounded flex items-center"
                     >
                       <FiTrash2 className="mr-1" /> 删除

@@ -15,6 +15,7 @@ import { storyExpanderApi } from "../../../api/storyExpander/storyExpanderApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { worldApi } from "../../../api/world/worldApi";
+import { format } from "date-fns";
 
 const StoryExpander = () => {
   // 状态管理
@@ -164,7 +165,7 @@ const StoryExpander = () => {
               onClick={handleSaveToKnowledgeBase}
               disabled={!output.background || isSaving || !worldName}
               className={`px-4 py-2 rounded-md font-medium flex items-center ${
-                !output.background || isSaving
+                !output.background || isSaving || !worldName
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                   : "bg-green-600 hover:bg-green-700 text-white shadow-md"
               }`}

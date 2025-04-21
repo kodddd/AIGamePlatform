@@ -10,4 +10,8 @@ export const worldApi = {
     const response = await client.post("/world/list", data);
     return response;
   },
+  deleteWorld: async (params) => {
+    const response = await client.get("/world/delete", { params });
+    return response;
+  },
 };

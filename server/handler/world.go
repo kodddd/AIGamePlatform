@@ -10,7 +10,6 @@ import (
 )
 
 func CreateWorld(ctx context.Context) error {
-	fmt.Println("in")
 	var request model.CreateWorldRequest
 	if err := appctx.BindJSON(ctx, &request); err != nil {
 		return err
@@ -21,6 +20,7 @@ func CreateWorld(ctx context.Context) error {
 			Message: result.Message,
 			Code:    result.Code,
 		})
+		return err
 	}
 	if result.Code != 200 {
 		render.JSON(ctx, result.Code, model.BasicErrorData{
@@ -45,6 +45,7 @@ func WorldList(ctx context.Context) error {
 			Message: result.Message,
 			Code:    result.Code,
 		})
+		return err
 	}
 	if result.Code != 200 {
 		render.JSON(ctx, result.Code, model.BasicErrorData{
@@ -53,6 +54,30 @@ func WorldList(ctx context.Context) error {
 		})
 	} else {
 		render.JSON(ctx, result.Code, result.Worlds)
+	}
+	return nil
+}
+
+func DeleteWorld(ctx context.Context)error{
+	var request model.DeleteWorldRequest
+	id := appctx.Query(ctx, "id")
+	fmt.Println("id", id)
+	request.Id = id
+	result, err := service.DeleteWorld(ctx, &request)
+	if err != nil {
+		render.JSON(ctx, result.Code, model.BasicErrorData{
+			Message: result.Message,
+			Code:    result.Code,
+		})
+		return err
+	}
+	if result.Code != 200 {
+		render.JSON(ctx, result.Code, model.BasicErrorData{
+			Message: result.Message,
+			Code:    result.Code,
+		})
+	} else {
+		render.JSON(ctx, result.Code, "success")
 	}
 	return nil
 }

@@ -6,6 +6,7 @@ type (
 		BaseText    string   `json:"base_text" bson:"base_text"`
 		WorldName   string   `json:"world_name" bson:"world_name"`
 		Deleted     bool     `json:"deleted" bson:"deleted"`
+		LastUpdated int64	`json:"last_updated" bson:"last_updated"`
 	}
 	CreateWorldResult struct {
 		Code    int    `json:"code"`
@@ -18,6 +19,7 @@ type (
 		WorldName   string   `json:"world_name" bson:"world_name"`
 		ImageRoutes []string `json:"image_routes" bson:"image_routes"`
 		Deleted     bool     `json:"deleted" bson:"deleted"`
+		LastUpdated int64	`json:"last_updated" bson:"last_updated"`
 	}
 	WorldListRequest struct {
 		Page     int `json:"page"`
@@ -28,5 +30,12 @@ type (
 		Code    int      `json:"code"`
 		Message string   `json:"message"`
 		Worlds  []*World `json:"worlds"`
+	}
+	DeleteWorldRequest struct {
+		Id string `json:"id" bson:"_id"`
+	}
+	DeleteWorldResult struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
 	}
 )

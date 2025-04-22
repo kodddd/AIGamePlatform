@@ -3,15 +3,22 @@ package service
 import (
 	"AIGamePlatform/server/agent/deepseek"
 	"AIGamePlatform/server/agent/liblib"
+	"AIGamePlatform/server/appctx"
 	"AIGamePlatform/server/model"
 	"context"
 	"fmt"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func GeneratePicture(ctx context.Context, request *model.GeneratePictureRequest) (*model.GeneratePictureResult, error) {
 	result := model.GeneratePictureResult{}
 	response := model.GeneratePictureResponse{}
+	basicErrorResult := model.GeneratePictureResult{
+		Code:    500,
+		Message: "server error",
+	}
 	communicateRequest := model.CommunicateRequest{
 		Model:  model.DefaultDeepseekModel,
 		Stream: false,
@@ -84,6 +91,19 @@ func GeneratePicture(ctx context.Context, request *model.GeneratePictureRequest)
 			result.Message = "Generating picture over time"
 			break
 		}
+	}
+	// 增加用户统计次数
+	userID, err := appctx.GetUserID(ctx) // 从上下文获取userID
+	if err != nil {
+		return &basicErrorResult, err
+	}
+	objID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return &basicErrorResult, err
+	}
+	err = UpdateAccountStats(ctx, objID, "picture_generation")
+	if err != nil {
+		return &basicErrorResult, err
 	}
 	result.Code = 200
 	result.Message = "success"

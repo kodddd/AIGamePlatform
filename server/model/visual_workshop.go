@@ -3,6 +3,7 @@ package model
 type (
 	GeneratePictureRequest struct {
 		Text        string `json:"text"`
+		Background  string `json:"background"`
 		Style       string `json:"style"`
 		AspectRatio string `json:"aspectRatio"`
 	}

@@ -16,6 +16,7 @@ import { visualWorkshopApi } from "../../../api/visualWorkshop/visualWorkshop";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import WorldSelecter from "../../../components/WorldSelecter";
+import { sleep } from "../../../utils/time";
 
 const VisualWorkshop = () => {
   const [prompt, setPrompt] = useState("");
@@ -39,7 +40,9 @@ const VisualWorkshop = () => {
         text: prompt,
         aspectRatio: settings.size,
         style: settings.style,
+        background: selectedWorld?.base_text,
       });
+      sleep(1000);
       setGeneratedImage({
         url: response.url,
       });
@@ -57,6 +60,7 @@ const VisualWorkshop = () => {
     setShowWorldSelecter(false);
     setSelectedWorld(world);
   };
+  const handleAddCharacter = async () => {};
   const handleDownload = async () => {
     if (!generatedImage) return;
 
@@ -226,6 +230,9 @@ const VisualWorkshop = () => {
                   <FiLayers className="mr-2" /> 生成预览
                 </h2>
                 {generatedImage && (
+                  <button onClick={handleAddCharacter}></button>
+                )}
+                {generatedImage && (
                   <button
                     onClick={handleDownload}
                     className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center"
@@ -252,21 +259,6 @@ const VisualWorkshop = () => {
                       className="max-w-full max-h-96 rounded-lg shadow-lg"
                       ref={canvasRef}
                     />
-                    {/* <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                      <div className="text-white text-center p-4">
-                        <p className="font-medium mb-2">
-                          {generatedImage.prompt}
-                        </p>
-                        <p className="text-sm opacity-80">
-                          {settings.style} |
-                          {settings.size === "square"
-                            ? "正方形"
-                            : settings.size === "portrait"
-                              ? "竖版"
-                              : "横版"}
-                        </p>
-                      </div>
-                    </div> */}
                   </div>
                 ) : (
                   <div className="text-center text-gray-500">

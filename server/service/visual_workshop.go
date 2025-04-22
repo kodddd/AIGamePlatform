@@ -24,12 +24,15 @@ func GeneratePicture(ctx context.Context, request *model.GeneratePictureRequest)
 		Stream: false,
 		Messages: []model.ChatMessage{
 			{
-				Role:    "user",
-				Content: "图画风格为" + request.Style + ",其余要求如下：\n" + request.Text,
+				Role:    "system",
+				Content: "你是一名专业的游戏原画提示词工程师，专门将中文描述转换为AI绘图用的英文提示词。请根据用户提供的画风、世界观和角色描述，生成结构清晰、细节丰富的纯英文正向提示词。只需输出最终的英文提示词，不要包含任何解释或额外说明。",
 			},
 			{
-				Role:    "system",
-				Content: "你是一名专业的AI提示词工程师，请根据用户提供的文本来生成纯英文正向提示词文本。注意，请直接输出结果。",
+				Role: "user",
+				Content: fmt.Sprintf("画风要求：%s\n世界观背景：%s\n角色描述：%s\n\n请将以上信息转化为适合AI生成游戏角色原画的英文提示词，需符合以下要求：\n1. 纯英文输出\n2. 包含角色特征、服饰细节、神态等关键要素\n3. 保持与指定画风和世界观的一致性\n4. 使用逗号分隔的短语形式，不要用完整句子",
+					request.Style,
+					request.Background,
+					request.Text),
 			},
 		},
 		Temperature:     model.DefaultDeepseekTemperature,

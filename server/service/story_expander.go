@@ -2,12 +2,19 @@ package service
 
 import (
 	"AIGamePlatform/server/agent/deepseek"
+	"AIGamePlatform/server/appctx"
 	"AIGamePlatform/server/model"
 	"context"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func ExpandStory(ctx context.Context, request *model.ExpandStoryRequest) (*model.ExpandStoryResult, error) {
 	response := model.ExpandStoryResponse{}
+	agentErrorResult := model.ExpandStoryResult{
+		Code:    500,
+		Message: "agent error",
+	}
 	communicateRequest := model.CommunicateRequest{
 		Model:  model.DefaultDeepseekModel,
 		Stream: false,
@@ -27,13 +34,22 @@ func ExpandStory(ctx context.Context, request *model.ExpandStoryRequest) (*model
 	client := deepseek.NewSSPClient()
 	communicateResponse, err := client.Communicate(ctx, &communicateRequest)
 	if err != nil {
-		return &model.ExpandStoryResult{
-			Code:    500,
-			Message: "agent error",
-		}, err
+		return &agentErrorResult, err
 	}
 	response.Content = communicateResponse.Choices[0].Message.Content
-	// 将输出结果持久化 todo
+	// 增加用户统计次数
+	userID, err := appctx.GetUserID(ctx) // 从上下文获取userID
+	if err != nil {
+		return nil, err
+	}
+	objID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return nil, err
+	}
+	err = UpdateAccountStats(ctx, objID, "story_expansion")
+	if err != nil {
+		return &agentErrorResult, err
+	}
 	return &model.ExpandStoryResult{
 		Code:     200,
 		Message:  "success",

@@ -18,26 +18,25 @@ import toast from "react-hot-toast";
 import { worldApi } from "../../../api/world/worldApi";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import Pagination from "../../../components/Pagination";
 
 const AssetLibrary = () => {
   const { user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [userName, setUserName] = useState(user?.userName || "");
   const [pageInfo, setPageInfo] = useState({
     page: 1,
-    page_size: 10,
+    page_size: 5,
   });
   useEffect(() => {
     setUserName(user?.userName || "");
   }, [user]);
   const refreshData = () => {
-    queryClient.invalidateQueries(["userData", userName]);
+    queryClient.invalidateQueries(["userData", userName, pageInfo]);
   };
-  const { data: worlds } = useQuery({
-    queryKey: ["userData", userName],
+  const { data: worldsData } = useQuery({
+    queryKey: ["userData", userName, pageInfo],
     queryFn: async () =>
       await worldApi.worldList({
         user_name: userName,
@@ -45,9 +44,21 @@ const AssetLibrary = () => {
       }),
     enabled: !!userName,
   });
+
+  const handlePageChange = (newPage) => {
+    setPageInfo((prev) => ({
+      ...prev,
+      page: newPage,
+    }));
+  };
+
   if (!isAuthenticated) {
     return <p className="p-6 text-center">请先登录</p>;
   }
+
+  const totalPages = worldsData?.total_count
+    ? Math.ceil(worldsData.total_count / pageInfo.page_size)
+    : 1;
 
   const handleDeleteWorld = async (id) => {
     // 这里可以调用API删除世界观
@@ -77,7 +88,7 @@ const AssetLibrary = () => {
 
         {/* 世界观列表 */}
         <div className="space-y-4">
-          {worlds?.map((world) => (
+          {worldsData?.worlds?.map((world) => (
             <div
               key={world.world_name}
               className="bg-white rounded-xl shadow-md overflow-hidden"
@@ -132,6 +143,15 @@ const AssetLibrary = () => {
             </div>
           ))}
         </div>
+        {/* 分页组件 */}
+        {worldsData?.total_count > pageInfo.page_size && (
+          <Pagination
+            currentPage={pageInfo.page}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            className="mt-6"
+          />
+        )}
       </div>
     </div>
   );

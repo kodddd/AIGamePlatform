@@ -53,12 +53,12 @@ func WorldList(ctx context.Context) error {
 			Code:    result.Code,
 		})
 	} else {
-		render.JSON(ctx, result.Code, result.Worlds)
+		render.JSON(ctx, result.Code, result)
 	}
 	return nil
 }
 
-func DeleteWorld(ctx context.Context)error{
+func DeleteWorld(ctx context.Context) error {
 	var request model.DeleteWorldRequest
 	id := appctx.Query(ctx, "id")
 	fmt.Println("id", id)

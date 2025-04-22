@@ -7,11 +7,15 @@ import {
   FiRefreshCw,
   FiLayers,
   FiUser,
+  FiGlobe,
+  FiMaximize2,
+  FiEdit,
 } from "react-icons/fi";
 import { FaPalette } from "react-icons/fa";
 import { visualWorkshopApi } from "../../../api/visualWorkshop/visualWorkshop";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import WorldSelecter from "../../../components/WorldSelecter";
 
 const VisualWorkshop = () => {
   const [prompt, setPrompt] = useState("");
@@ -23,7 +27,8 @@ const VisualWorkshop = () => {
   });
   const navigate = useNavigate();
   const canvasRef = useRef(null);
-
+  const [showWorldSelecter, setShowWorldSelecter] = useState(false);
+  const [selectedWorld, setSelectedWorld] = useState(null);
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 
@@ -47,7 +52,11 @@ const VisualWorkshop = () => {
       setIsGenerating(false);
     }
   };
-
+  const handleWorldSelect = (world) => {
+    console.log("Selected world:", world);
+    setShowWorldSelecter(false);
+    setSelectedWorld(world);
+  };
   const handleDownload = async () => {
     if (!generatedImage) return;
 
@@ -107,21 +116,31 @@ const VisualWorkshop = () => {
             <div className="space-y-6">
               {/* 导入角色区域 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  角色来源
+                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                  <FiUser className="mr-1" /> 角色来源
                 </label>
                 <button
-                  disabled
-                  className="w-full px-4 py-2 bg-gray-100 text-gray-400 rounded-md border border-gray-200 cursor-not-allowed flex items-center justify-center"
+                  onClick={() => setShowWorldSelecter(true)}
+                  className="w-full px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-md border flex items-center justify-center"
                 >
-                  <FiUser className="mr-2" /> 从知识库导入角色
+                  <FiGlobe className="mr-2" /> 从资源库导入世界观
                 </button>
+                {selectedWorld && (
+                  <div className="mt-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-md text-sm inline-block">
+                    {selectedWorld.world_name}
+                  </div>
+                )}
+                {!selectedWorld && (
+                  <div className="mt-2 px-3 py-1 text-sm bg-gray-400 rounded-md text-gray-600 inline-block">
+                    请选择世界观
+                  </div>
+                )}
               </div>
 
               {/* 提示词输入 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  角色描述
+                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                  <FiEdit className="mr-1" /> 角色描述
                 </label>
                 <textarea
                   value={prompt}
@@ -153,7 +172,8 @@ const VisualWorkshop = () => {
 
               {/* 图片尺寸选择 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                  <FiMaximize2 className="mr-1" />
                   图片尺寸
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -178,9 +198,9 @@ const VisualWorkshop = () => {
               {/* 生成按钮 */}
               <button
                 onClick={handleGenerate}
-                disabled={isGenerating || !prompt.trim()}
+                disabled={isGenerating || !prompt.trim() || !selectedWorld}
                 className={`w-full px-4 py-3 rounded-md font-medium text-white ${
-                  isGenerating || !prompt.trim()
+                  isGenerating || !prompt.trim() || !selectedWorld
                     ? "bg-indigo-400 cursor-not-allowed"
                     : "bg-indigo-600 hover:bg-indigo-700 shadow-md"
                 } flex items-center justify-center`}
@@ -259,6 +279,12 @@ const VisualWorkshop = () => {
           </div>
         </div>
       </div>
+      {showWorldSelecter && (
+        <WorldSelecter
+          onClose={() => setShowWorldSelecter(false)}
+          onSelect={handleWorldSelect}
+        />
+      )}
     </div>
   );
 };

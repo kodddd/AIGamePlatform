@@ -7,7 +7,7 @@ const Pagination = ({
   className = "",
 }) => {
   const getPageNumbers = () => {
-    const maxVisiblePages = 5; // 最多显示5个页码
+    const maxVisiblePages = 5;
     const pages = [];
 
     if (totalPages <= maxVisiblePages) {
@@ -34,7 +34,6 @@ const Pagination = ({
 
   return (
     <div className={`flex items-center justify-center gap-1 ${className}`}>
-      {/* 上一页按钮 */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
@@ -48,7 +47,6 @@ const Pagination = ({
         <FiChevronLeft />
       </button>
 
-      {/* 第一页 */}
       {currentPage > 3 && totalPages > 5 && (
         <>
           <button
@@ -61,7 +59,6 @@ const Pagination = ({
         </>
       )}
 
-      {/* 页码按钮 */}
       {getPageNumbers().map((page) => (
         <button
           key={page}
@@ -76,7 +73,6 @@ const Pagination = ({
         </button>
       ))}
 
-      {/* 最后一页 */}
       {currentPage < totalPages - 2 && totalPages > 5 && (
         <>
           {currentPage < totalPages - 3 && <span className="px-1">...</span>}
@@ -89,7 +85,6 @@ const Pagination = ({
         </>
       )}
 
-      {/* 下一页按钮 */}
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}

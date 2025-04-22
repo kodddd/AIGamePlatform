@@ -1,10 +1,19 @@
 package model
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type (
+	AccountStats struct {
+		ExpandStortyStat    int `json:"expand_story_stat" bson:"expand_story_stat"`
+		WorldStat           int `json:"world_stat" bson:"world_stat"`
+		GeneratePictureStat int `json:"generate_picture_stat" bson:"generate_picture_stat"`
+	}
 	Account struct {
-		UserName string `json:"userName" bson:"userName"`
-		Email    string `json:"email" bson:"email"`
-		Password string `json:"-" bson:"password"`
+		Id           primitive.ObjectID `json:"id" bson:"_id"`
+		UserName     string             `json:"userName" bson:"userName"`
+		Email        string             `json:"email" bson:"email"`
+		Password     string             `json:"-" bson:"password"`
+		AccountStats *AccountStats      `json:"accountStats" bson:"accountStats"`
 	}
 
 	GetMeResult struct {
@@ -38,9 +47,10 @@ type (
 	}
 
 	RegisterRequest struct {
-		UserName string `json:"userName" bson:"userName"`
-		Email    string `json:"email" bson:"email"`
-		Password string `json:"password" bson:"password"`
+		UserName     string        `json:"userName" bson:"userName"`
+		Email        string        `json:"email" bson:"email"`
+		Password     string        `json:"password" bson:"password"`
+		AccountStats *AccountStats `json:"accountStats" bson:"accountStats"`
 	}
 
 	RegisterResult struct {

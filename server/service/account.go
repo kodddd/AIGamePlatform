@@ -108,12 +108,22 @@ func Register(ctx context.Context, request *model.RegisterRequest) (*model.Regis
 	if duplicatedUsernameOrEmail(client, request.UserName, request.Email, primitive.NilObjectID) {
 		return &model.RegisterResult{Code: 409, Message: "duplicated user name or email"}, nil
 	}
-	client.Insert(AccountColletion, model.Account(*request))
+	request.AccountStats = &model.AccountStats{
+		ExpandStortyStat:    0,
+		WorldStat:           0,
+		GeneratePictureStat: 0,
+	}
+	result, _ := client.Insert(AccountColletion, *request)
+	id := result.InsertedIDs[0].(string)
+	token, err := utils.GenerateToken(ctx, id)
+	if err != nil {
+		return &model.RegisterResult{Code: 500, Message: "server error"}, err
+	}
 	return &model.RegisterResult{Code: 200, Message: "register success", User: &model.Account{
 		UserName: request.UserName,
 		Email:    request.Email,
 	},
-		Token: "testToken"}, nil
+		Token: token}, nil
 }
 
 func UpdateProfile(ctx context.Context, request *model.UpdateProfileRequest) (*model.UpdateProfileResult, error) {
@@ -159,4 +169,32 @@ func UpdatePassword(ctx context.Context, request *model.UpdatePasswordRequest) (
 	oldAccount.Password = request.NewPassword
 	client.ReplaceOne(AccountColletion, bson.M{"_id": objID}, oldAccount)
 	return &model.UpdatePasswordResult{Code: 200, Message: "update password success"}, nil
+}
+
+func UpdateAccountStats(ctx context.Context, objID primitive.ObjectID, origin string) error {
+	if origin == "" {
+		return fmt.Errorf("origin is empty")
+	} else if origin == "story_expansion" {
+		client := mongo.GetClient(ctx)
+		var account model.Account
+		client.FindOne(AccountColletion, bson.M{"_id": objID}, &account)
+		account.AccountStats.ExpandStortyStat++
+		client.ReplaceOne(AccountColletion, bson.M{"_id": objID}, account)
+		return nil
+	} else if origin == "world_creation" {
+		client := mongo.GetClient(ctx)
+		var account model.Account
+		client.FindOne(AccountColletion, bson.M{"_id": objID}, &account)
+		account.AccountStats.WorldStat++
+		client.ReplaceOne(AccountColletion, bson.M{"_id": objID}, account)
+		return nil
+	} else if origin == "picture_generation" {
+		client := mongo.GetClient(ctx)
+		var account model.Account
+		client.FindOne(AccountColletion, bson.M{"_id": objID}, &account)
+		account.AccountStats.GeneratePictureStat++
+		client.ReplaceOne(AccountColletion, bson.M{"_id": objID}, account)
+		return nil
+	}
+	return nil
 }

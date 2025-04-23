@@ -32,7 +32,6 @@ const StoryExpander = () => {
   });
   const [worldName, setWorldName] = useState("");
   const [isCopying, setIsCopying] = useState(false);
-  const [copySuccess, setCopySuccess] = useState(false);
   const [continuePrompt, setContinuePrompt] = useState(""); // 继续对话的输入
   const [isContinuing, setIsContinuing] = useState(false); // 继续对话的加载状态
   const navigate = useNavigate();
@@ -50,8 +49,6 @@ const StoryExpander = () => {
     setIsCopying(true);
     try {
       await navigator.clipboard.writeText(output.background);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 2000);
     } catch (err) {
       toast.error("复制失败");
     } finally {
@@ -207,7 +204,6 @@ const StoryExpander = () => {
                   <option value="科幻">科幻</option>
                   <option value="现代">现代</option>
                   <option value="恐怖">恐怖</option>
-                  <option value="">其他</option>
                 </select>
               </div>
 
@@ -311,9 +307,6 @@ const StoryExpander = () => {
               </div>
               {output.background && (
                 <div className="absolute top-2 right-2 flex items-center">
-                  {copySuccess && (
-                    <span className="mr-2 text-sm text-green-600">已复制!</span>
-                  )}
                   <button
                     onClick={handleCopyContent}
                     disabled={isCopying || !output.background}

@@ -115,9 +115,9 @@ func AddCharacter(ctx context.Context, request *model.AddCharacterRequest) (*mod
 		Message: "server error",
 	}
 	client := mongo.GetClient(ctx)
-	objID,err:=primitive.ObjectIDFromHex(request.WorldID)
-	if err!=nil{
-		return &basicErrorResponse,err
+	objID, err := primitive.ObjectIDFromHex(request.WorldID)
+	if err != nil {
+		return &basicErrorResponse, err
 	}
 	err = client.FindOne(WorldCollection, bson.M{"_id": objID}, &world)
 	if err != nil {
@@ -140,10 +140,10 @@ func AddCharacter(ctx context.Context, request *model.AddCharacterRequest) (*mod
 		BaseImage:            request.BaseImage,
 		CharacterDescription: request.CharacterDescription,
 	}
-	if world.Characters!=nil{
+	if world.Characters != nil {
 		world.Characters = append(world.Characters, newCharacter)
-	}else{
-		world.Characters=[]*model.Character{newCharacter}
+	} else {
+		world.Characters = []*model.Character{newCharacter}
 	}
 	world.LastUpdated = time.Now().Unix()
 	// todo 更新world统计数据
@@ -153,7 +153,7 @@ func AddCharacter(ctx context.Context, request *model.AddCharacterRequest) (*mod
 		return &basicErrorResponse, err
 	}
 	return &model.AddCharacterResult{
-		Code: 200,
+		Code:    200,
 		Message: "success",
 	}, nil
 }

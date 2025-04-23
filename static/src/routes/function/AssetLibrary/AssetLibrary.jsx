@@ -114,8 +114,9 @@ const AssetLibrary = () => {
                   {/* 统计标签 */}
                   <div className="flex gap-3 mt-4">
                     <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm">
-                      <FiImage className="mr-1" /> {world.stats?.visuals || 0}
-                      个图片
+                      <FiImage className="mr-1" />{" "}
+                      {world.characters?.length || 0}
+                      个人物
                     </span>
                     <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm">
                       <FiCode className="mr-1" /> {world.stats?.quests || 0}

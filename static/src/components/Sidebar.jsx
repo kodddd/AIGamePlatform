@@ -56,6 +56,21 @@ const Sidebar = () => {
           </li>
           <li>
             <NavLink
+              to="/story-workshop"
+              className={({ isActive }) =>
+                `flex items-center p-3 rounded-lg transition-colors ${
+                  isActive
+                    ? "bg-blue-900 text-white"
+                    : "hover:bg-gray-700 text-gray-300"
+                }`
+              }
+            >
+              <FiBook className="mr-3" />
+              动态剧情生成
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/asset-library"
               className={({ isActive }) =>
                 `flex items-center p-3 rounded-lg transition-colors ${

@@ -16,6 +16,10 @@ func ExpandStory(ctx context.Context, request *model.ExpandStoryRequest) (*model
 		Code:    500,
 		Message: "agent error",
 	}
+	basicErrorResult := model.ExpandStoryResult{
+		Code:    500,
+		Message: "server error",
+	}
 	communicateRequest := model.CommunicateRequest{
 		Model:  model.DefaultDeepseekModel,
 		Stream: false,
@@ -45,15 +49,15 @@ func ExpandStory(ctx context.Context, request *model.ExpandStoryRequest) (*model
 	// 增加用户统计次数
 	userID, err := appctx.GetUserID(ctx) // 从上下文获取userID
 	if err != nil {
-		return nil, err
+		return &basicErrorResult, err
 	}
 	objID, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
-		return nil, err
+		return &basicErrorResult, err
 	}
 	err = UpdateAccountStats(ctx, objID, "story_expansion")
 	if err != nil {
-		return &agentErrorResult, err
+		return &basicErrorResult, err
 	}
 	return &model.ExpandStoryResult{
 		Code:     200,

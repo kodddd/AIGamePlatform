@@ -7,6 +7,7 @@ type (
 		ExpandStortyStat    int `json:"expand_story_stat" bson:"expand_story_stat"`
 		WorldStat           int `json:"world_stat" bson:"world_stat"`
 		GeneratePictureStat int `json:"generate_picture_stat" bson:"generate_picture_stat"`
+		GenerateStoryStat   int `json:"generate_story_stat" bson:"generate_story_stat"`
 	}
 	Account struct {
 		Id           primitive.ObjectID `json:"id" bson:"_id"`

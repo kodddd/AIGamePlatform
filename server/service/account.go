@@ -195,6 +195,13 @@ func UpdateAccountStats(ctx context.Context, objID primitive.ObjectID, origin st
 		account.AccountStats.GeneratePictureStat++
 		client.ReplaceOne(AccountColletion, bson.M{"_id": objID}, account)
 		return nil
+	} else if origin == "story_generation" {
+		client := mongo.GetClient(ctx)
+		var account model.Account
+		client.FindOne(AccountColletion, bson.M{"_id": objID}, &account)
+		account.AccountStats.GenerateStoryStat++
+		client.ReplaceOne(AccountColletion, bson.M{"_id": objID}, account)
+		return nil
 	}
 	return nil
 }

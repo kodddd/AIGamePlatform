@@ -17,6 +17,7 @@ const Home = () => {
       title: "动态剧情生成",
       desc: "根据玩家选择实时生成分支剧情，打造无限可能的叙事体验",
       color: "from-blue-500 to-cyan-400",
+      link: "/story-workshop",
     },
     {
       icon: <FiImage className="w-8 h-8" />,

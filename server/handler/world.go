@@ -81,3 +81,27 @@ func DeleteWorld(ctx context.Context) error {
 	}
 	return nil
 }
+
+func AddCharacter(ctx context.Context) error {
+	var request model.AddCharacterRequest
+	if err := appctx.BindJSON(ctx, &request); err != nil {
+		return err
+	}
+	fmt.Println("request", request)
+	result, err := service.AddCharacter(ctx, &request)
+	if err != nil {
+		render.JSON(ctx, result.Code, model.BasicErrorData{
+			Message: result.Message,
+			Code:    result.Code,
+		})
+	}
+	if result.Code != 200 {
+		render.JSON(ctx, result.Code, model.BasicErrorData{
+			Message: result.Message,
+			Code:    result.Code,
+		})
+	} else {
+		render.JSON(ctx, result.Code, "success")
+	}
+	return nil
+}

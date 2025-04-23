@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import WorldSelecter from "../../../components/WorldSelecter";
 import { sleep } from "../../../utils/time";
+import { worldApi } from "../../../api/world/worldApi";
 
 const VisualWorkshop = () => {
   const [prompt, setPrompt] = useState("");
@@ -30,6 +31,7 @@ const VisualWorkshop = () => {
   const canvasRef = useRef(null);
   const [showWorldSelecter, setShowWorldSelecter] = useState(false);
   const [selectedWorld, setSelectedWorld] = useState(null);
+  const [characterName, setCharacterName] = useState("");
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 
@@ -60,10 +62,32 @@ const VisualWorkshop = () => {
     setShowWorldSelecter(false);
     setSelectedWorld(world);
   };
-  const handleAddCharacter = async () => {};
+  const handleAddCharacter = async () => {
+    if (!generatedImage || !characterName) return;
+
+    const characterData = {
+      world_id: selectedWorld.id,
+      character_name: characterName,
+      base_image: generatedImage.url,
+      character_description: prompt,
+    };
+
+    try {
+      const response = await worldApi.addCharacter(characterData);
+      toast.success("角色添加成功");
+      console.log("Character added:", response);
+    } catch (error) {
+      if (error.status == 401) {
+        navigate("/login");
+        toast.error("登录过期请重新登录");
+      } else {
+        toast.error("添加角色失败");
+      }
+      console.error("Error adding character:", error);
+    }
+  };
   const handleDownload = async () => {
     if (!generatedImage) return;
-
     try {
       const response = await fetch(generatedImage.url);
       const blob = await response.blob();
@@ -230,7 +254,22 @@ const VisualWorkshop = () => {
                   <FiLayers className="mr-2" /> 生成预览
                 </h2>
                 {generatedImage && (
-                  <button onClick={handleAddCharacter}></button>
+                  <input
+                    type="text"
+                    value={characterName}
+                    onChange={(e) => setCharacterName(e.target.value)}
+                    placeholder="输入角色名称"
+                    className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mr-2 w-64"
+                  />
+                )}
+                {generatedImage && (
+                  <button
+                    onClick={handleAddCharacter}
+                    disabled={!characterName}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-green-700 flex items-center"
+                  >
+                    <FiUser className="mr-2" /> 添加角色
+                  </button>
                 )}
                 {generatedImage && (
                   <button

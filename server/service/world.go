@@ -107,3 +107,53 @@ func DeleteWorld(ctx context.Context, request *model.DeleteWorldRequest) (*model
 		Message: "success",
 	}, nil
 }
+
+func AddCharacter(ctx context.Context, request *model.AddCharacterRequest) (*model.AddCharacterResult, error) {
+	var world model.World
+	basicErrorResponse := model.AddCharacterResult{
+		Code:    500,
+		Message: "server error",
+	}
+	client := mongo.GetClient(ctx)
+	objID,err:=primitive.ObjectIDFromHex(request.WorldID)
+	if err!=nil{
+		return &basicErrorResponse,err
+	}
+	err = client.FindOne(WorldCollection, bson.M{"_id": objID}, &world)
+	if err != nil {
+		return &basicErrorResponse, err
+	}
+	// 检查角色名称是否重复
+	if world.Characters != nil {
+		for _, character := range world.Characters {
+			if character.CharacterName == request.CharacterName {
+				return &model.AddCharacterResult{
+					Code:    400,
+					Message: "character name already exists",
+				}, nil
+			}
+		}
+	}
+	// 创建新角色
+	newCharacter := &model.Character{
+		CharacterName:        request.CharacterName,
+		BaseImage:            request.BaseImage,
+		CharacterDescription: request.CharacterDescription,
+	}
+	if world.Characters!=nil{
+		world.Characters = append(world.Characters, newCharacter)
+	}else{
+		world.Characters=[]*model.Character{newCharacter}
+	}
+	world.LastUpdated = time.Now().Unix()
+	// todo 更新world统计数据
+	// 更新世界文档
+	_, err = client.ReplaceOne(WorldCollection, bson.M{"_id": world.Id}, world)
+	if err != nil {
+		return &basicErrorResponse, err
+	}
+	return &model.AddCharacterResult{
+		Code: 200,
+		Message: "success",
+	}, nil
+}

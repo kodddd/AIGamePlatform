@@ -33,7 +33,7 @@ var (
 	}
 
 	HttpClient = http.Client{
-		Timeout:   time.Minute*5,
+		Timeout:   time.Minute * 5,
 		Transport: transport,
 	}
 

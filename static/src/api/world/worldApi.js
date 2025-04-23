@@ -14,4 +14,8 @@ export const worldApi = {
     const response = await client.get("/world/delete", { params });
     return response;
   },
+  addCharacter: async (data) => {
+    const response = await client.post("/world/add-character", data);
+    return response;
+  },
 };

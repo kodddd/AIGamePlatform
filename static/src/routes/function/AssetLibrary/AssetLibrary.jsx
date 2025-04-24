@@ -119,7 +119,7 @@ const AssetLibrary = () => {
                       个人物
                     </span>
                     <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm">
-                      <FiCode className="mr-1" /> {world.stats?.quests || 0}
+                      <FiCode className="mr-1" /> {world.storys?.length || 0}
                       个剧情
                     </span>
                   </div>

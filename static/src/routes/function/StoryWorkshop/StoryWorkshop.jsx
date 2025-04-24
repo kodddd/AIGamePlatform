@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import WorldSelecter from "../../../components/WorldSelecter";
 import { sleep } from "../../../utils/time";
 import { worldApi } from "../../../api/world/worldApi";
+import WorldDetailsPopup from "../../../components/WorldDetailsPopup";
 
 const StoryWorkshop = () => {
   const [prompt, setPrompt] = useState("");
@@ -37,7 +38,7 @@ const StoryWorkshop = () => {
   const [selectedWorld, setSelectedWorld] = useState(null);
   const [storyTitle, setStoryTitle] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
-
+  const [showWorldDetails, setShowWorldDetails] = useState(false);
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 
@@ -138,7 +139,10 @@ const StoryWorkshop = () => {
                   <FiGlobe className="mr-2" /> 从资源库导入世界观
                 </button>
                 {selectedWorld && (
-                  <div className="mt-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-md text-sm inline-block">
+                  <div
+                    className="mt-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-md text-sm inline-block cursor-pointer hover:bg-blue-200 transition-colors"
+                    onClick={() => setShowWorldDetails(true)}
+                  >
                     {selectedWorld.world_name}
                   </div>
                 )}
@@ -305,6 +309,12 @@ const StoryWorkshop = () => {
         <WorldSelecter
           onClose={() => setShowWorldSelecter(false)}
           onSelect={handleWorldSelect}
+        />
+      )}
+      {showWorldDetails && (
+        <WorldDetailsPopup
+          world={selectedWorld}
+          onClose={() => setShowWorldDetails(false)}
         />
       )}
     </div>

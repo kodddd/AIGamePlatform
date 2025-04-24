@@ -76,9 +76,8 @@ const StoryWorkshop = () => {
 
     const storyData = {
       world_id: selectedWorld.id,
-      title: storyTitle,
-      content: generatedStory.content,
-      prompt: prompt,
+      story_name: storyTitle,
+      text: generatedStory.content,
     };
 
     try {

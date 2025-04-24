@@ -18,4 +18,8 @@ export const worldApi = {
     const response = await client.post("/world/add-character", data);
     return response;
   },
+  addStory: async (data) => {
+    const response = await client.post("/world/add-story", data);
+    return response;
+  },
 };

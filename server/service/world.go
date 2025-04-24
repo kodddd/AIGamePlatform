@@ -146,13 +146,70 @@ func AddCharacter(ctx context.Context, request *model.AddCharacterRequest) (*mod
 		world.Characters = []*model.Character{newCharacter}
 	}
 	world.LastUpdated = time.Now().Unix()
-	// todo 更新world统计数据
+	// 更新world统计数据
+	if world.WorldStats == nil {
+		world.WorldStats = &model.WorldStats{} // 初始化
+	}
+	world.WorldStats.CharacterCount = len(world.Characters)
 	// 更新世界文档
 	_, err = client.ReplaceOne(WorldCollection, bson.M{"_id": world.Id}, world)
 	if err != nil {
 		return &basicErrorResponse, err
 	}
 	return &model.AddCharacterResult{
+		Code:    200,
+		Message: "success",
+	}, nil
+}
+
+func AddStory(ctx context.Context, request *model.AddStoryRequest) (*model.AddStoryResult, error) {
+	var world model.World
+	basicErrorResponse := model.AddStoryResult{
+		Code:    500,
+		Message: "server error",
+	}
+	client := mongo.GetClient(ctx)
+	objID, err := primitive.ObjectIDFromHex(request.WorldID)
+	if err != nil {
+		return &basicErrorResponse, err
+	}
+	err = client.FindOne(WorldCollection, bson.M{"_id": objID}, &world)
+	if err != nil {
+		return &basicErrorResponse, err
+	}
+	// 检查故事名称是否重复
+	if world.Storys != nil {
+		for _, story := range world.Storys {
+			if story.StoryName == request.StoryName {
+				return &model.AddStoryResult{
+					Code:    400,
+					Message: "story name already exists",
+				}, nil
+			}
+		}
+	}
+	// 创建新故事
+	newStory := &model.Story{
+		StoryName: request.StoryName,
+		Text:      request.Text,
+	}
+	if world.Storys != nil {
+		world.Storys = append(world.Storys, newStory)
+	} else {
+		world.Storys = []*model.Story{newStory}
+	}
+	world.LastUpdated = time.Now().Unix()
+	// 更新world统计数据
+	if world.WorldStats == nil {
+		world.WorldStats = &model.WorldStats{} // 初始化
+	}
+	world.WorldStats.StoryCount = len(world.Storys)
+	// 更新世界文档
+	_, err = client.ReplaceOne(WorldCollection, bson.M{"_id": world.Id}, world)
+	if err != nil {
+		return &basicErrorResponse, err
+	}
+	return &model.AddStoryResult{
 		Code:    200,
 		Message: "success",
 	}, nil

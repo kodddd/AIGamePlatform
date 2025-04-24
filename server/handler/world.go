@@ -87,7 +87,6 @@ func AddCharacter(ctx context.Context) error {
 	if err := appctx.BindJSON(ctx, &request); err != nil {
 		return err
 	}
-	fmt.Println("request", request)
 	result, err := service.AddCharacter(ctx, &request)
 	if err != nil {
 		render.JSON(ctx, result.Code, model.BasicErrorData{
@@ -101,7 +100,30 @@ func AddCharacter(ctx context.Context) error {
 			Code:    result.Code,
 		})
 	} else {
-		render.JSON(ctx, result.Code, "success")
+		render.JSON(ctx, result.Code, result.Message)
+	}
+	return nil
+}
+
+func AddStory(ctx context.Context)error{
+	var request model.AddStoryRequest
+	if err := appctx.BindJSON(ctx, &request); err != nil {
+		return err
+	}
+	result, err := service.AddStory(ctx, &request)
+	if err != nil {
+		render.JSON(ctx, result.Code, model.BasicErrorData{
+			Message: result.Message,
+			Code:    result.Code,
+		})
+	}
+	if result.Code != 200 {
+		render.JSON(ctx, result.Code, model.BasicErrorData{
+			Message: result.Message,
+			Code:    result.Code,
+		})
+	} else {
+		render.JSON(ctx, result.Code, result.Message)
 	}
 	return nil
 }

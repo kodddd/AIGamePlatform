@@ -32,6 +32,7 @@ func LoadProtectedRoutes(router gin.IRouter) {
 	router.GET("/world/delete", appctx.GinHandler(DeleteWorld))
 	router.POST("/world/add-character", appctx.GinHandler(AddCharacter))
 	router.POST("/world/add-story", appctx.GinHandler(AddStory))
+	router.GET("/world/get", appctx.GinHandler(GetWorld))
 	router.POST("/function/story-generation", appctx.GinHandler(GenerateStory))
 	// router.POST("/posts", appctx.GinHandler(CreatePost))
 }

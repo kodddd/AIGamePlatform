@@ -22,4 +22,8 @@ export const worldApi = {
     const response = await client.post("/world/add-story", data);
     return response;
   },
+  getWorld: async (params) => {
+    const response = await client.get("/world/get", { params });
+    return response;
+  },
 };

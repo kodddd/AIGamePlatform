@@ -121,18 +121,18 @@ func UpdatePassword(ctx context.Context) error {
 	return nil
 }
 
-func GetAccountStats(ctx context.Context)error{
-	result,err:=service.GetAccountStats(ctx)
-	if err!=nil{
+func GetAccountStats(ctx context.Context) error {
+	result, err := service.GetAccountStats(ctx)
+	if err != nil {
 		render.JSON(ctx, result.Code, model.BasicResponse{
 			Code:    result.Code,
 			Message: result.Message,
 		})
 	}
 	if result.Code != 200 {
-		render.JSON(ctx,result.Code,result.Message)
-	}else{
-		render.JSON(ctx,result.Code,result.AccountStats)
+		render.JSON(ctx, result.Code, result.Message)
+	} else {
+		render.JSON(ctx, result.Code, result.AccountStats)
 	}
 	return err
 }

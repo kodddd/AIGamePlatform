@@ -89,9 +89,9 @@ type (
 		Code    int    `json:"code"`
 		Message string `json:"message"`
 	}
-	GetAccountStatsResult struct{
-		Code    int           `json:"code"`
-		Message string        `json:"message"`
+	GetAccountStatsResult struct {
+		Code         int           `json:"code"`
+		Message      string        `json:"message"`
 		AccountStats *AccountStats `json:"accountStats"`
 	}
 )

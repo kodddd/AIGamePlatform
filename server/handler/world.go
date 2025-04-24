@@ -61,7 +61,6 @@ func WorldList(ctx context.Context) error {
 func DeleteWorld(ctx context.Context) error {
 	var request model.DeleteWorldRequest
 	id := appctx.Query(ctx, "id")
-	fmt.Println("id", id)
 	request.Id = id
 	result, err := service.DeleteWorld(ctx, &request)
 	if err != nil {
@@ -105,7 +104,7 @@ func AddCharacter(ctx context.Context) error {
 	return nil
 }
 
-func AddStory(ctx context.Context)error{
+func AddStory(ctx context.Context) error {
 	var request model.AddStoryRequest
 	if err := appctx.BindJSON(ctx, &request); err != nil {
 		return err
@@ -124,6 +123,20 @@ func AddStory(ctx context.Context)error{
 		})
 	} else {
 		render.JSON(ctx, result.Code, result.Message)
+	}
+	return nil
+}
+
+func GetWorld(ctx context.Context) error {
+	worldID := appctx.Query(ctx, "world_id")
+	result, err := service.GetWorld(ctx, worldID)
+	if err != nil {
+		render.JSON(ctx, result.Code, result.Message)
+	}
+	if result.Code != 200 {
+		render.JSON(ctx, result.Code, result.Message)
+	} else {
+		render.JSON(ctx, result.Code, result.World)
 	}
 	return nil
 }

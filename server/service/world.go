@@ -214,3 +214,25 @@ func AddStory(ctx context.Context, request *model.AddStoryRequest) (*model.AddSt
 		Message: "success",
 	}, nil
 }
+
+func GetWorld(ctx context.Context, worldID string) (*model.GetWorldResult, error) {
+	client := mongo.GetClient(ctx)
+	var world model.World
+	basicErrorResult := model.GetWorldResult{
+		Code:    500,
+		Message: "server error",
+	}
+	objID, err := primitive.ObjectIDFromHex(worldID)
+	if err != nil {
+		return &basicErrorResult, err
+	}
+	err = client.FindOne(WorldCollection, bson.M{"_id": objID}, &world)
+	if err != nil {
+		return &basicErrorResult, err
+	}
+	return &model.GetWorldResult{
+		Code:    200,
+		Message: "success",
+		World:   &world,
+	}, nil
+}

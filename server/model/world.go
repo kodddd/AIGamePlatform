@@ -75,4 +75,9 @@ type (
 		Code    int    `json:"code"`
 		Message string `json:"message"`
 	}
+	GetWorldResult struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+		World   *World `json:"world"`
+	}
 )

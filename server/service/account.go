@@ -206,7 +206,7 @@ func UpdateAccountStats(ctx context.Context, objID primitive.ObjectID, origin st
 	return nil
 }
 
-func GetAccountStats(ctx context.Context)(*model.GetAccountStatsResult,error){
+func GetAccountStats(ctx context.Context) (*model.GetAccountStatsResult, error) {
 	basicErrorResult := model.GetAccountStatsResult{
 		Code:    500,
 		Message: "server error",

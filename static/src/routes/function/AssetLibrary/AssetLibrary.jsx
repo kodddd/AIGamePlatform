@@ -20,6 +20,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { format } from "date-fns";
 import Pagination from "../../../components/Pagination";
+import { useNavigate } from "react-router-dom";
 
 const AssetLibrary = () => {
   const { user, isAuthenticated } = useAuth();
@@ -29,6 +30,7 @@ const AssetLibrary = () => {
     page: 1,
     page_size: 5,
   });
+  const navigate = useNavigate();
   useEffect(() => {
     setUserName(user?.userName || "");
   }, [user]);
@@ -135,7 +137,10 @@ const AssetLibrary = () => {
                     >
                       <FiTrash2 className="mr-1" /> 删除
                     </button>
-                    <button className="px-3 py-1 text-sm bg-amber-500 text-white rounded flex items-center hover:bg-amber-600">
+                    <button
+                      onClick={() => navigate(`/asset-library/${world.id}`)}
+                      className="px-3 py-1 text-sm bg-amber-500 text-white rounded flex items-center hover:bg-amber-600"
+                    >
                       进入 <FiChevronRight className="ml-1" />
                     </button>
                   </div>

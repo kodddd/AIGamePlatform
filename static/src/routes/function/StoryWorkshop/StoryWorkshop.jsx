@@ -129,13 +129,13 @@ const StoryWorkshop = () => {
               {/* 世界观选择 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                  <FiGlobe className="mr-1" /> 世界观
+                  <FiGlobe className="mr-1" /> 剧情来源
                 </label>
                 <button
                   onClick={() => setShowWorldSelecter(true)}
                   className="w-full px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-md border flex items-center justify-center"
                 >
-                  <FiGlobe className="mr-2" /> 选择世界观
+                  <FiGlobe className="mr-2" /> 从资源库导入世界观
                 </button>
                 {selectedWorld && (
                   <div className="mt-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-md text-sm inline-block">

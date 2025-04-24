@@ -3,6 +3,7 @@ import { useAuth } from "../../api/auth/context";
 import client from "../../api/client";
 import toast from "react-hot-toast";
 import { userApi } from "../../api/user/userApi";
+import { useQuery } from "@tanstack/react-query";
 
 const Profile = () => {
   const { user: authUser, initializeAuth } = useAuth();
@@ -14,7 +15,11 @@ const Profile = () => {
     userName: authUser?.userName || "",
     email: authUser?.email || "",
   });
-
+  const { data: statsData } = useQuery({
+    queryKey: ["userStats"],
+    queryFn: () => userApi.getAccountStats(),
+    enabled: !!authUser,
+  });
   // 密码相关状态
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
@@ -398,20 +403,26 @@ const Profile = () => {
               <h3 className="text-lg font-semibold mb-4">创作统计</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-gray-800 p-4 rounded-lg">
-                  <p className="text-sm text-gray-400">AI生成故事</p>
-                  <p className="text-xl font-bold">24</p>
+                  <p className="text-sm text-gray-400">保存世界观数量</p>
+                  <p className="text-xl font-bold">{statsData?.world_stat}</p>
                 </div>
                 <div className="bg-gray-800 p-4 rounded-lg">
-                  <p className="text-sm text-gray-400">任务分支</p>
-                  <p className="text-xl font-bold">56</p>
+                  <p className="text-sm text-gray-400">生成世界观次数</p>
+                  <p className="text-xl font-bold">
+                    {statsData?.expand_story_stat}
+                  </p>
                 </div>
                 <div className="bg-gray-800 p-4 rounded-lg">
-                  <p className="text-sm text-gray-400">2D素材</p>
-                  <p className="text-xl font-bold">112</p>
+                  <p className="text-sm text-gray-400">生成剧情次数</p>
+                  <p className="text-xl font-bold">
+                    {statsData?.generate_story_stat}
+                  </p>
                 </div>
                 <div className="bg-gray-800 p-4 rounded-lg">
-                  <p className="text-sm text-gray-400">3D素材</p>
-                  <p className="text-xl font-bold">38</p>
+                  <p className="text-sm text-gray-400">生成图片次数</p>
+                  <p className="text-xl font-bold">
+                    {statsData?.generate_picture_stat}
+                  </p>
                 </div>
               </div>
             </div>

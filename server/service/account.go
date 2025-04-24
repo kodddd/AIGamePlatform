@@ -205,3 +205,24 @@ func UpdateAccountStats(ctx context.Context, objID primitive.ObjectID, origin st
 	}
 	return nil
 }
+
+func GetAccountStats(ctx context.Context)(*model.GetAccountStatsResult,error){
+	basicErrorResult := model.GetAccountStatsResult{
+		Code:    500,
+		Message: "server error",
+	}
+	userID, err := appctx.GetUserID(ctx) // 从上下文获取userID
+	if err != nil {
+		return &basicErrorResult, err
+	}
+	objID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return &basicErrorResult, err
+	}
+	client := mongo.GetClient(ctx)
+	var account model.Account
+	client.FindOne(AccountColletion, bson.M{"_id": objID}, &account)
+	return &model.GetAccountStatsResult{
+		Code: 200, Message: "success", AccountStats: account.AccountStats,
+	}, nil
+}

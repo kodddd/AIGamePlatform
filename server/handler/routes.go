@@ -20,6 +20,7 @@ func LoadProtectedRoutes(router gin.IRouter) {
 	// 用户相关
 	router.GET("/auth/me", appctx.GinHandler(GetMe))
 	router.POST("/user/profile/update", appctx.GinHandler(UpdateProfile))
+	router.GET("/user/stats", appctx.GinHandler(GetAccountStats))
 	router.POST("/user/password/update", appctx.GinHandler(UpdatePassword))
 	// router.PUT("/profile", appctx.GinHandler(UpdateProfile))
 

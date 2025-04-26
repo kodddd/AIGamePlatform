@@ -258,32 +258,34 @@ const VisualWorkshop = () => {
                 <h2 className="text-xl font-semibold flex items-center">
                   <FiLayers className="mr-2" /> 生成预览
                 </h2>
-                {generatedImage && (
-                  <input
-                    type="text"
-                    value={characterName}
-                    onChange={(e) => setCharacterName(e.target.value)}
-                    placeholder="输入角色名称"
-                    className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mr-2 w-64"
-                  />
-                )}
-                {generatedImage && (
-                  <button
-                    onClick={handleAddCharacter}
-                    disabled={!characterName}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-green-700 flex items-center"
-                  >
-                    <FiUser className="mr-2" /> 添加角色
-                  </button>
-                )}
-                {generatedImage && (
-                  <button
-                    onClick={handleDownload}
-                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center"
-                  >
-                    <FiDownload className="mr-2" /> 下载图片
-                  </button>
-                )}
+                <div className="flex space-x-2">
+                  {generatedImage && (
+                    <input
+                      type="text"
+                      value={characterName}
+                      onChange={(e) => setCharacterName(e.target.value)}
+                      placeholder="输入角色名称"
+                      className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mr-2 w-64"
+                    />
+                  )}
+                  {generatedImage && (
+                    <button
+                      onClick={handleAddCharacter}
+                      disabled={!characterName}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-green-700 flex items-center"
+                    >
+                      <FiUser className="mr-2" /> 添加角色
+                    </button>
+                  )}
+                  {generatedImage && (
+                    <button
+                      onClick={handleDownload}
+                      className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center"
+                    >
+                      <FiDownload className="mr-2" /> 下载图片
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="p-6 flex-1 flex justify-center items-center min-h-96 bg-gray-100">

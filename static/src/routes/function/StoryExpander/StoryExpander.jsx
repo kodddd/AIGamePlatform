@@ -8,6 +8,9 @@ import {
   FiSave,
   FiPlus,
   FiEdit,
+  FiGlobe,
+  FiTarget,
+  FiZap,
   FiMessageSquare,
 } from "react-icons/fi";
 import { useAuth } from "../../../api/auth/context";
@@ -143,7 +146,7 @@ const StoryExpander = () => {
               <FiBook className="mr-2" /> 世界扩写引擎
             </h1>
             <p className="text-gray-600 mb-5">
-              输入简要世界观，AI将自动生成完整的游戏叙事素材
+              输入简要世界观，AI将自动生成完整的游戏世界观
             </p>
           </div>
 
@@ -190,7 +193,8 @@ const StoryExpander = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                  <FiGlobe className="mr-1" />
                   世界类型
                 </label>
                 <select
@@ -208,7 +212,8 @@ const StoryExpander = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                  <FiTarget className="mr-1" />
                   随机性 {settings.casualty.toFixed(1)}
                 </label>
                 <input
@@ -233,7 +238,8 @@ const StoryExpander = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                  <FiZap className="mr-1" />
                   创意度 {settings.creativity.toFixed(1)}
                 </label>
                 <input

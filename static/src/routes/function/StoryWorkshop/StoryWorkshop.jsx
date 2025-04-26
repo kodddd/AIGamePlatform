@@ -278,10 +278,10 @@ const StoryWorkshop = () => {
                 </div>
               </div>
 
-              <div className="p-6 flex-1 min-h-96 bg-gray-50 overflow-auto">
+              <div className="p-6 flex-1 flex justify-center items-center min-h-96 bg-gray-50">
                 {isGenerating ? (
                   <div className="text-center">
-                    <FiRefreshCw className="animate-spin text-4xl text-indigo-600 mx-auto mb-4 mt-4" />
+                    <FiRefreshCw className="animate-spin text-4xl text-indigo-600 mx-auto mb-4" />
                     <p className="text-gray-600">AI正在创作您的剧情...</p>
                     <p className="text-sm text-gray-500 mt-2">
                       根据设置复杂度，可能需要20-60秒

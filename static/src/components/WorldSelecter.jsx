@@ -1,4 +1,3 @@
-// src/pages/WorldViewLibrary.jsx
 import { useState, useEffect } from "react";
 import { FiGlobe, FiImage, FiCode } from "react-icons/fi";
 import { useAuth } from "../api/auth/context";
@@ -6,12 +5,14 @@ import { worldApi } from "../api/world/worldApi";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import Pagination from "../components/Pagination";
+import { useRef } from "react";
 
 const WorldSelecter = ({ onClose, onSelect }) => {
   const { user, isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
   const [userName, setUserName] = useState(user?.userName || "");
   const [pageInfo, setPageInfo] = useState({ page: 1, page_size: 5 });
+  const popupRef = useRef(null);
 
   useEffect(() => setUserName(user?.userName || ""), [user]);
 
@@ -21,10 +22,22 @@ const WorldSelecter = ({ onClose, onSelect }) => {
     enabled: !!userName,
   });
 
+  const handleClickOutside = (event) => {
+    if (popupRef.current && !popupRef.current.contains(event.target)) {
+      onClose();
+    }
+  };
+
   if (!isAuthenticated)
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2">
-        <div className="bg-white rounded-lg p-4 max-w-xs w-full">
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2"
+        onClick={handleClickOutside}
+      >
+        <div
+          className="bg-white rounded-lg p-4 max-w-xs w-full"
+          onClick={(e) => e.stopPropagation()}
+        >
           <p className="text-center text-sm">请先登录</p>
           <button
             onClick={onClose}
@@ -41,8 +54,15 @@ const WorldSelecter = ({ onClose, onSelect }) => {
     : 1;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2">
-      <div className="bg-white rounded-lg shadow-md max-w-md w-full max-h-[90vh] flex flex-col">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2"
+      onClick={handleClickOutside}
+    >
+      <div
+        className="bg-white rounded-lg shadow-md max-w-md w-full max-h-[90vh] flex flex-col"
+        ref={popupRef}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="p-3 border-b flex justify-between items-center">
           <div>
             <h1 className="text-lg font-bold flex items-center gap-1">

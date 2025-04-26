@@ -3,12 +3,16 @@ import { FiGlobe, FiImage, FiBook, FiChevronLeft } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { worldApi } from "../../../api/world/worldApi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import CharacterPopup from "../../../components/CharacterPopup";
+import StoryPopup from "../../../components/StoryPopup";
 
 const WorldDetailView = () => {
   const navigate = useNavigate();
   const { worldId } = useParams();
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [selectedStory, setSelectedStory] = useState(null);
 
   const {
     data: world,
@@ -19,6 +23,7 @@ const WorldDetailView = () => {
     queryFn: async () => await worldApi.getWorld({ world_id: worldId }),
     enabled: !!worldId,
   });
+
   useEffect(() => {
     if (isError) {
       toast.error("加载世界观详情失败");
@@ -69,7 +74,8 @@ const WorldDetailView = () => {
             {world.characters?.map((character, index) => (
               <div
                 key={index}
-                className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+                className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => setSelectedCharacter(character)}
               >
                 {character.base_image ? (
                   <img
@@ -106,7 +112,8 @@ const WorldDetailView = () => {
             {world.storys?.map((story, index) => (
               <div
                 key={index}
-                className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                className="border rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer"
+                onClick={() => setSelectedStory(story)}
               >
                 <h3 className="font-medium">{story.story_name}</h3>
               </div>
@@ -117,6 +124,16 @@ const WorldDetailView = () => {
           </div>
         </div>
       </div>
+
+      <CharacterPopup
+        character={selectedCharacter}
+        onClose={() => setSelectedCharacter(null)}
+      />
+
+      <StoryPopup
+        story={selectedStory}
+        onClose={() => setSelectedStory(null)}
+      />
     </div>
   );
 };

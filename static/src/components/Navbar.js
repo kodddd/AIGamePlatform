@@ -30,7 +30,6 @@ const Navbar = ({ showUserMenu = true }) => {
                   icon={<FiUser />}
                   text={user?.userName || "个人中心"}
                 />
-                <NavItem to="/settings" icon={<FiSettings />} text="设置" />
                 <button
                   onClick={logout}
                   className="flex items-center px-4 py-2 rounded-md transition-all hover:bg-gray-800 hover:text-gray-200"

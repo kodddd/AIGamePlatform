@@ -41,21 +41,6 @@ const Sidebar = () => {
           </li>
           <li>
             <NavLink
-              to="/visual-workshop"
-              className={({ isActive }) =>
-                `flex items-center p-3 rounded-lg transition-colors ${
-                  isActive
-                    ? "bg-blue-900 text-white"
-                    : "hover:bg-gray-700 text-gray-300"
-                }`
-              }
-            >
-              <FiImage className="mr-3" />
-              AI视觉工坊
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
               to="/story-workshop"
               className={({ isActive }) =>
                 `flex items-center p-3 rounded-lg transition-colors ${
@@ -67,6 +52,21 @@ const Sidebar = () => {
             >
               <FiBook className="mr-3" />
               动态剧情生成
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/visual-workshop"
+              className={({ isActive }) =>
+                `flex items-center p-3 rounded-lg transition-colors ${
+                  isActive
+                    ? "bg-blue-900 text-white"
+                    : "hover:bg-gray-700 text-gray-300"
+                }`
+              }
+            >
+              <FiImage className="mr-3" />
+              AI视觉工坊
             </NavLink>
           </li>
           <li>

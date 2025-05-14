@@ -87,7 +87,7 @@ func Login(ctx context.Context, request model.LoginRequest) (*model.LoginResult,
 		}
 		return &model.LoginResult{Code: 500, Message: "server error"}, err
 	}
-	if request.Password == account.Password {
+	if utils.CheckPassword(account.Password, request.Password) == nil {
 		id, _ := client.FindOneAndGetID(AccountColletion, bson.M{key: val})
 		token, err := utils.GenerateToken(ctx, id)
 		if err != nil {
@@ -113,8 +113,14 @@ func Register(ctx context.Context, request *model.RegisterRequest) (*model.Regis
 		WorldStat:           0,
 		GeneratePictureStat: 0,
 	}
+	// 加密密码
+	hashedPassword, err := utils.HashPassword(request.Password)
+	if err != nil {
+		return &model.RegisterResult{Code: 500, Message: "server error"}, err
+	}
+	request.Password = hashedPassword
 	result, _ := client.Insert(AccountColletion, *request)
-	id := result.InsertedIDs[0].(string)
+	id := result.InsertedIDs[0].(primitive.ObjectID).Hex()
 	token, err := utils.GenerateToken(ctx, id)
 	if err != nil {
 		return &model.RegisterResult{Code: 500, Message: "server error"}, err
@@ -163,10 +169,14 @@ func UpdatePassword(ctx context.Context, request *model.UpdatePasswordRequest) (
 	client := mongo.GetClient(ctx)
 	var oldAccount model.Account
 	client.FindOne(AccountColletion, bson.M{"_id": objID}, &oldAccount)
-	if oldAccount.Password != request.CurrentPassword {
+	if utils.CheckPassword(oldAccount.Password, request.CurrentPassword) != nil {
 		return &model.UpdatePasswordResult{Code: 403, Message: "wrong password"}, nil
 	}
-	oldAccount.Password = request.NewPassword
+	newHashedPassword, err := utils.HashPassword(request.NewPassword)
+	if err != nil {
+		return &model.UpdatePasswordResult{Code: 500, Message: "server error"}, err
+	}
+	oldAccount.Password = newHashedPassword
 	client.ReplaceOne(AccountColletion, bson.M{"_id": objID}, oldAccount)
 	return &model.UpdatePasswordResult{Code: 200, Message: "update password success"}, nil
 }

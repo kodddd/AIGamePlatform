@@ -35,18 +35,4 @@ client.interceptors.response.use(
   }
 );
 
-/**
- * 创建API模块
- * @param {string} endpoint 端点路径
- * @returns CRUD方法集合
- */
-export const createApi = (endpoint) => ({
-  get: (params) => client.get(endpoint, { params }),
-  getById: (id) => client.get(`${endpoint}/${id}`),
-  create: (data) => client.post(endpoint, data),
-  update: (id, data) => client.put(`${endpoint}/${id}`, data),
-  patch: (id, data) => client.patch(`${endpoint}/${id}`, data),
-  delete: (id) => client.delete(`${endpoint}/${id}`),
-});
-
 export default client;

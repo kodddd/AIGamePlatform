@@ -1,5 +1,5 @@
 // src/pages/StoryExpander.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FiBook,
   FiSettings,
@@ -35,10 +35,35 @@ const StoryExpander = () => {
   });
   const [worldName, setWorldName] = useState("");
   const [isCopying, setIsCopying] = useState(false);
-  const [continuePrompt, setContinuePrompt] = useState(""); // 继续对话的输入
-  const [isContinuing, setIsContinuing] = useState(false); // 继续对话的加载状态
+  // const [continuePrompt, setContinuePrompt] = useState(""); // 继续对话的输入
+  // const [isContinuing, setIsContinuing] = useState(false); // 继续对话的加载状态
   const navigate = useNavigate();
+  useEffect(() => {
+    const savedData = sessionStorage.getItem("currentWorldview");
+    if (savedData) {
+      const { inputText, output, settings, worldName } = JSON.parse(savedData);
+      setInputText(inputText);
+      setOutput(output);
+      setSettings(settings);
+      setWorldName(worldName);
+    }
+  }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      sessionStorage.setItem(
+        "currentWorldview",
+        JSON.stringify({
+          inputText,
+          output,
+          settings,
+          worldName,
+        })
+      );
+    }, 500); // 500ms防抖
+
+    return () => clearTimeout(timer);
+  }, [inputText, output, settings, worldName]);
   // 认证检查
   const { user, isAuthenticated, logout } = useAuth();
   if (!isAuthenticated) {
@@ -73,6 +98,7 @@ const StoryExpander = () => {
         background: response.content,
         conversationCount: 0,
       });
+      toast.success("生成成功！");
     } catch (error) {
       console.error("生成错误:", error);
       if (error.status == 401) {
@@ -85,33 +111,33 @@ const StoryExpander = () => {
   };
 
   // 继续对话
-  const handleContinueConversation = async () => {
-    if (
-      !output.background ||
-      output.conversationCount >= 5 ||
-      !continuePrompt.trim()
-    )
-      return;
+  // const handleContinueConversation = async () => {
+  //   if (
+  //     !output.background ||
+  //     output.conversationCount >= 5 ||
+  //     !continuePrompt.trim()
+  //   )
+  //     return;
 
-    setIsContinuing(true);
-    try {
-      const response = await storyExpanderApi.continueStory({
-        currentContent: output.background,
-        prompt: continuePrompt,
-        settings,
-      });
+  //   setIsContinuing(true);
+  //   try {
+  //     const response = await storyExpanderApi.continueStory({
+  //       currentContent: output.background,
+  //       prompt: continuePrompt,
+  //       settings,
+  //     });
 
-      setOutput((prev) => ({
-        background: `${response.content}\n\n---\n\n${prev.background}`,
-        conversationCount: prev.conversationCount + 1,
-      }));
-      setContinuePrompt("");
-    } catch (error) {
-      console.error("继续对话错误:", error);
-    } finally {
-      setIsContinuing(false);
-    }
-  };
+  //     setOutput((prev) => ({
+  //       background: `${response.content}\n\n---\n\n${prev.background}`,
+  //       conversationCount: prev.conversationCount + 1,
+  //     }));
+  //     setContinuePrompt("");
+  //   } catch (error) {
+  //     console.error("继续对话错误:", error);
+  //   } finally {
+  //     setIsContinuing(false);
+  //   }
+  // };
 
   // 保存到知识库处理函数
   const handleSaveToKnowledgeBase = async () => {
@@ -155,7 +181,9 @@ const StoryExpander = () => {
             <input
               type="text"
               value={worldName}
-              onChange={(e) => setWorldName(e.target.value)}
+              onChange={(e) => {
+                setWorldName(e.target.value);
+              }}
               placeholder="输入世界观名称"
               className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mr-2 w-64"
             />
@@ -199,9 +227,9 @@ const StoryExpander = () => {
                 </label>
                 <select
                   value={settings.genre}
-                  onChange={(e) =>
-                    setSettings({ ...settings, genre: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setSettings({ ...settings, genre: e.target.value });
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   <option value="奇幻">奇幻</option>
@@ -222,12 +250,12 @@ const StoryExpander = () => {
                   max="2"
                   step="0.1"
                   value={settings.casualty}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setSettings({
                       ...settings,
                       casualty: parseFloat(e.target.value),
-                    })
-                  }
+                    });
+                  }}
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                 />
                 <div className="flex justify-between text-xs text-gray-500">
@@ -248,12 +276,12 @@ const StoryExpander = () => {
                   max="2"
                   step="0.1"
                   value={settings.creativity}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setSettings({
                       ...settings,
                       creativity: parseFloat(e.target.value),
-                    })
-                  }
+                    });
+                  }}
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                 />
                 <div className="flex justify-between text-xs text-gray-500">
@@ -267,7 +295,9 @@ const StoryExpander = () => {
             <h2 className="text-xl font-semibold mt-6 mb-4">世界观输入</h2>
             <textarea
               value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
+              onChange={(e) => {
+                setInputText(e.target.value);
+              }}
               placeholder="例：一个被遗忘的古代文明沉没在海底，其科技远超现代..."
               className="w-full h-40 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             />
@@ -299,11 +329,11 @@ const StoryExpander = () => {
                 <FiMessageSquare className="inline mr-2" />
                 扩写世界观
               </h2>
-              {output.background && (
+              {/* {output.background && (
                 <div className="text-sm text-gray-500">
                   对话次数: {output.conversationCount}/5
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* 世界观展示区域 */}
@@ -334,7 +364,7 @@ const StoryExpander = () => {
             </div>
 
             {/* 继续对话区域 */}
-            {output.background && output.conversationCount < 5 && (
+            {/* {output.background && output.conversationCount < 5 && (
               <div className="mt-4">
                 <div className="flex items-center mb-2">
                   <h3 className="text-lg font-medium">继续对话</h3>
@@ -370,7 +400,7 @@ const StoryExpander = () => {
                   )}
                 </button>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>

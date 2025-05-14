@@ -35,8 +35,8 @@ func GeneratePicture(ctx context.Context, request *model.GeneratePictureRequest)
 					request.Text),
 			},
 		},
-		Temperature:     model.DefaultDeepseekTemperature,
-		PresencePenalty: model.DefaultDeepseekPresencePenalty,
+		Temperature:     0.3,
+		PresencePenalty: 0.5,
 	}
 	dsclient := deepseek.NewSSPClient()
 	communicateResponse, err := dsclient.Communicate(ctx, &communicateRequest)

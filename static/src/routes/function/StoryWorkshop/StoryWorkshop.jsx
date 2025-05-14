@@ -289,7 +289,7 @@ const StoryWorkshop = () => {
                   </div>
                 ) : generatedStory ? (
                   <div className="prose max-w-none">
-                    <h2 className="text-2xl font-bold mb-4">{storyTitle}</h2>
+                    {/* <h2 className="text-2xl font-bold mb-4">{storyTitle}</h2> */}
                     <div className="whitespace-pre-wrap text-gray-800">
                       {generatedStory.content}
                     </div>

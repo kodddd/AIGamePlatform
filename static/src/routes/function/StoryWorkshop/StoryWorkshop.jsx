@@ -1,5 +1,5 @@
 // src/pages/StoryWorkshop.jsx
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   FiBook,
   FiDownload,
@@ -39,6 +39,35 @@ const StoryWorkshop = () => {
   const [storyTitle, setStoryTitle] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [showWorldDetails, setShowWorldDetails] = useState(false);
+  useEffect(() => {
+    const savedData = sessionStorage.getItem("currentStory");
+    if (savedData) {
+      const { prompt, generatedStory, settings, storyTitle, selectedWorld } =
+        JSON.parse(savedData);
+      setPrompt(prompt);
+      setGeneratedStory(generatedStory);
+      setSettings(settings);
+      setStoryTitle(storyTitle);
+      setSelectedWorld(selectedWorld);
+    }
+  }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      sessionStorage.setItem(
+        "currentStory",
+        JSON.stringify({
+          prompt,
+          generatedStory,
+          settings,
+          storyTitle,
+          selectedWorld,
+        })
+      );
+    }, 500); // 500ms防抖
+
+    return () => clearTimeout(timer);
+  }, [prompt, generatedStory, settings, storyTitle, selectedWorld]);
+
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 

@@ -1,4 +1,4 @@
-// src/pages/StoryExpander.jsx
+// src/pages/WorldExpander.jsx
 import { useState, useEffect } from "react";
 import {
   FiBook,
@@ -19,7 +19,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { worldApi } from "../../../api/world/worldApi";
 
-const StoryExpander = () => {
+const WorldExpander = () => {
   // 状态管理
   const [inputText, setInputText] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -408,4 +408,4 @@ const StoryExpander = () => {
   );
 };
 
-export default StoryExpander;
+export default WorldExpander;

@@ -7,7 +7,7 @@ import Home from "./routes/base/HomePage";
 import NotFound from "./routes/base/NotFound";
 import Register from "./routes/account/RegisterPage";
 import Profile from "./routes/account/ProfilePage";
-import StoryExpander from "./routes/function/StoryExpander/StoryExpander";
+import WorldExpander from "./routes/function/WorldExpander/WorldExpander";
 import VisualWorkshop from "./routes/function/VisualWorkshop/VisualWorkshop";
 
 import Layout from "./components/Layout";
@@ -82,7 +82,7 @@ function AppRouter() {
         {/* 需要认证的功能路由 */}
         <Route element={<ProtectedRoute />}>
           <Route element={<FunctionLayout />}>
-            <Route path="/story-expander" element={<StoryExpander />} />
+            <Route path="/story-expander" element={<WorldExpander />} />
             <Route path="/visual-workshop" element={<VisualWorkshop />} />
             <Route path="/asset-library" element={<AssetLibrary />} />
             <Route path="/story-workshop" element={<StoryWorkshop />} />

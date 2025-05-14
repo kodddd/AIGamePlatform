@@ -1,5 +1,5 @@
 // src/pages/VisualWorkshop.jsx
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   FiImage,
   FiDownload,
@@ -34,6 +34,34 @@ const VisualWorkshop = () => {
   const [selectedWorld, setSelectedWorld] = useState(null);
   const [characterName, setCharacterName] = useState("");
   const [showWorldDetails, setShowWorldDetails] = useState(false);
+  useEffect(() => {
+    const savedData = sessionStorage.getItem("currentCharacter");
+    if (savedData) {
+      const { prompt, generatedImage, settings, characterName, selectedWorld } =
+        JSON.parse(savedData);
+      setPrompt(prompt);
+      setGeneratedImage(generatedImage);
+      setSettings(settings);
+      setCharacterName(characterName);
+      setSelectedWorld(selectedWorld);
+    }
+  }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      sessionStorage.setItem(
+        "currentCharacter",
+        JSON.stringify({
+          prompt,
+          generatedImage,
+          settings,
+          characterName,
+          selectedWorld,
+        })
+      );
+    }, 500); // 500ms防抖
+
+    return () => clearTimeout(timer);
+  }, [prompt, generatedImage, settings, characterName, selectedWorld]);
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 

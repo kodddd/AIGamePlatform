@@ -24,7 +24,7 @@ const Navbar = ({ showUserMenu = true }) => {
           <nav className="hidden md:flex space-x-1">
             {isAuthenticated ? (
               <>
-                <NavItem to="/docs" icon={<FiFile />} text="文档" />
+                <NavItem to="/document" icon={<FiFile />} text="文档" />
                 <NavItem
                   to="/profile"
                   icon={<FiUser />}

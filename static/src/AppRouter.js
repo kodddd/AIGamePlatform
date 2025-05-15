@@ -7,6 +7,7 @@ import Home from "./routes/base/HomePage";
 import NotFound from "./routes/base/NotFound";
 import Register from "./routes/account/RegisterPage";
 import Profile from "./routes/account/ProfilePage";
+import Document from "./routes/base/Document";
 import WorldExpander from "./routes/function/WorldExpander/WorldExpander";
 import VisualWorkshop from "./routes/function/VisualWorkshop/VisualWorkshop";
 
@@ -68,6 +69,7 @@ function AppRouter() {
         {/* 公共路由 - 不需要认证 */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/document" element={<Document />} />
           <Route path="*" element={<NotFound />} />
         </Route>
 

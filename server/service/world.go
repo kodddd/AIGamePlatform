@@ -13,7 +13,9 @@ import (
 )
 
 const (
-	WorldCollection = "world"
+	WorldCollection     = "world"
+	CharacterCollection = "character"
+	StoryCollection     = "story"
 )
 
 func CreateWorld(ctx context.Context, request *model.CreateWorldRequest) (*model.CreateWorldResult, error) {
@@ -124,26 +126,28 @@ func AddCharacter(ctx context.Context, request *model.AddCharacterRequest) (*mod
 		return &basicErrorResponse, err
 	}
 	// 检查角色名称是否重复
-	if world.Characters != nil {
-		for _, character := range world.Characters {
-			if character.CharacterName == request.CharacterName {
-				return &model.AddCharacterResult{
-					Code:    400,
-					Message: "character name already exists",
-				}, nil
-			}
-		}
-	}
-	// 创建新角色
+	// if world.Characters != nil {
+	// 	for _, character := range world.Characters {
+	// 		if character.CharacterName == request.CharacterName {
+	// 			return &model.AddCharacterResult{
+	// 				Code:    400,
+	// 				Message: "character name already exists",
+	// 			}, nil
+	// 		}
+	// 	}
+	// }
+	// 创建新角色 todo
 	newCharacter := &model.Character{
+		WorldID:              request.WorldID,
 		CharacterName:        request.CharacterName,
 		BaseImage:            request.BaseImage,
 		CharacterDescription: request.CharacterDescription,
 	}
+	result, _ := client.InsertOne(CharacterCollection, newCharacter)
 	if world.Characters != nil {
-		world.Characters = append(world.Characters, newCharacter)
+		world.Characters = append(world.Characters, result.InsertedID.(primitive.ObjectID))
 	} else {
-		world.Characters = []*model.Character{newCharacter}
+		world.Characters = []primitive.ObjectID{result.InsertedID.(primitive.ObjectID)}
 	}
 	world.LastUpdated = time.Now().Unix()
 	// 更新world统计数据
@@ -178,25 +182,27 @@ func AddStory(ctx context.Context, request *model.AddStoryRequest) (*model.AddSt
 		return &basicErrorResponse, err
 	}
 	// 检查故事名称是否重复
-	if world.Storys != nil {
-		for _, story := range world.Storys {
-			if story.StoryName == request.StoryName {
-				return &model.AddStoryResult{
-					Code:    400,
-					Message: "story name already exists",
-				}, nil
-			}
-		}
-	}
+	// if world.Storys != nil {
+	// 	for _, story := range world.Storys {
+	// 		if story.StoryName == request.StoryName {
+	// 			return &model.AddStoryResult{
+	// 				Code:    400,
+	// 				Message: "story name already exists",
+	// 			}, nil
+	// 		}
+	// 	}
+	// }
 	// 创建新故事
 	newStory := &model.Story{
+		WorldID:   request.WorldID,
 		StoryName: request.StoryName,
 		Text:      request.Text,
 	}
+	result, _ := client.InsertOne(StoryCollection, newStory)
 	if world.Storys != nil {
-		world.Storys = append(world.Storys, newStory)
+		world.Storys = append(world.Storys, result.InsertedID.(primitive.ObjectID))
 	} else {
-		world.Storys = []*model.Story{newStory}
+		world.Storys = []primitive.ObjectID{result.InsertedID.(primitive.ObjectID)}
 	}
 	world.LastUpdated = time.Now().Unix()
 	// 更新world统计数据
@@ -234,5 +240,59 @@ func GetWorld(ctx context.Context, worldID string) (*model.GetWorldResult, error
 		Code:    200,
 		Message: "success",
 		World:   &world,
+	}, nil
+}
+
+func GetWorldCharacters(ctx context.Context, worldID string) (*model.GetWorldCharactersResult, error) {
+	client := mongo.GetClient(ctx)
+	var world model.World
+	basicErrorResult := model.GetWorldCharactersResult{
+		Code:    500,
+		Message: "server error",
+	}
+	objID, err := primitive.ObjectIDFromHex(worldID)
+	if err != nil {
+		return &basicErrorResult, err
+	}
+	err = client.FindOne(WorldCollection, bson.M{"_id": objID}, &world)
+	if err != nil {
+		return &basicErrorResult, err
+	}
+	var characters []*model.Character
+	err = client.Find(CharacterCollection, bson.M{"_id": bson.M{"$in": world.Characters}}, &characters)
+	if err != nil {
+		return &basicErrorResult, err
+	}
+	return &model.GetWorldCharactersResult{
+		Code:       200,
+		Message:    "success",
+		Characters: characters,
+	}, nil
+}
+
+func GetWorldStories(ctx context.Context, worldID string) (*model.GetWorldStoriesResult, error) {
+	client := mongo.GetClient(ctx)
+	var world model.World
+	basicErrorResult := model.GetWorldStoriesResult{
+		Code:    500,
+		Message: "server error",
+	}
+	objID, err := primitive.ObjectIDFromHex(worldID)
+	if err != nil {
+		return &basicErrorResult, err
+	}
+	err = client.FindOne(WorldCollection, bson.M{"_id": objID}, &world)
+	if err != nil {
+		return &basicErrorResult, err
+	}
+	var storys []*model.Story
+	err = client.Find(StoryCollection, bson.M{"_id": bson.M{"$in": world.Storys}}, &storys)
+	if err != nil {
+		return &basicErrorResult, err
+	}
+	return &model.GetWorldStoriesResult{
+		Code:    200,
+		Message: "success",
+		Storys:  storys,
 	}, nil
 }

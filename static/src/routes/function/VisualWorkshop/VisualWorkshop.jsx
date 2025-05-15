@@ -30,6 +30,7 @@ const VisualWorkshop = () => {
   });
   const navigate = useNavigate();
   const canvasRef = useRef(null);
+  const [added, setAdded] = useState(false);
   const [showWorldSelecter, setShowWorldSelecter] = useState(false);
   const [selectedWorld, setSelectedWorld] = useState(null);
   const [characterName, setCharacterName] = useState("");
@@ -37,13 +38,20 @@ const VisualWorkshop = () => {
   useEffect(() => {
     const savedData = sessionStorage.getItem("currentCharacter");
     if (savedData) {
-      const { prompt, generatedImage, settings, characterName, selectedWorld } =
-        JSON.parse(savedData);
+      const {
+        prompt,
+        generatedImage,
+        settings,
+        characterName,
+        selectedWorld,
+        added,
+      } = JSON.parse(savedData);
       setPrompt(prompt);
       setGeneratedImage(generatedImage);
       setSettings(settings);
       setCharacterName(characterName);
       setSelectedWorld(selectedWorld);
+      setAdded(added);
     }
   }, []);
   useEffect(() => {
@@ -56,12 +64,13 @@ const VisualWorkshop = () => {
           settings,
           characterName,
           selectedWorld,
+          added,
         })
       );
     }, 500); // 500ms防抖
 
     return () => clearTimeout(timer);
-  }, [prompt, generatedImage, settings, characterName, selectedWorld]);
+  }, [prompt, generatedImage, settings, characterName, selectedWorld, added]);
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 
@@ -78,6 +87,7 @@ const VisualWorkshop = () => {
       setGeneratedImage({
         url: response.url,
       });
+      toast.success("生成成功");
     } catch (error) {
       if (error.status == 401) {
         navigate("/login");
@@ -85,6 +95,7 @@ const VisualWorkshop = () => {
       }
     } finally {
       setIsGenerating(false);
+      setAdded(false);
     }
   };
   const handleWorldSelect = (world) => {
@@ -103,9 +114,9 @@ const VisualWorkshop = () => {
     };
 
     try {
-      const response = await worldApi.addCharacter(characterData);
+      setAdded(true);
+      await worldApi.addCharacter(characterData);
       toast.success("角色添加成功");
-      console.log("Character added:", response);
     } catch (error) {
       if (error.status == 401) {
         navigate("/login");
@@ -113,6 +124,7 @@ const VisualWorkshop = () => {
       } else {
         toast.error("添加角色失败");
       }
+      setAdded(false);
       console.error("Error adding character:", error);
     }
   };
@@ -299,7 +311,7 @@ const VisualWorkshop = () => {
                   {generatedImage && (
                     <button
                       onClick={handleAddCharacter}
-                      disabled={!characterName}
+                      disabled={!characterName || added}
                       className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-green-700 flex items-center"
                     >
                       <FiUser className="mr-2" /> 添加角色

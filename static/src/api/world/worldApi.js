@@ -26,4 +26,12 @@ export const worldApi = {
     const response = await client.get("/world/get", { params });
     return response;
   },
+  getWorldCharacters: async (params) => {
+    const response = await client.get("/world/get-characters", { params });
+    return response;
+  },
+  getWorldStories: async (params) => {
+    const response = await client.get("/world/get-stories", { params });
+    return response;
+  },
 };

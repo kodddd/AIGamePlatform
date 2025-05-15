@@ -19,7 +19,7 @@ const Document = () => {
         return (
           <div className="p-6">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              世界扩写引擎 (World Expander)
+              世界扩写引擎
             </h2>
             <p className="text-lg text-gray-700 mb-6">
               将简要的世界观概念转化为完整的游戏世界设定和背景故事。
@@ -28,7 +28,7 @@ const Document = () => {
               使用步骤：
             </h3>
             <ol className="space-y-3 text-base text-gray-700">
-              <li className="ml-4">1. 在主页点击“立即体验”进入功能页面</li>
+              <li className="ml-4">1. 在主页点击功能模块进入功能页面</li>
               <li className="ml-4">2. 导航至左侧菜单栏的"世界扩写引擎"选项</li>
               <li className="ml-4">3. 输入世界观描述</li>
               <li className="ml-4">4. 调整生成设置</li>
@@ -41,7 +41,7 @@ const Document = () => {
         return (
           <div className="p-6">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              动态剧情生成 (Story Workshop)
+              动态剧情生成
             </h2>
             <p className="text-lg text-gray-700 mb-6">
               基于游戏世界设定创建分支故事情节和叙事路径。
@@ -50,7 +50,7 @@ const Document = () => {
               使用步骤：
             </h3>
             <ol className="space-y-3 text-base text-gray-700">
-              <li className="ml-4">1. 在主页点击“立即体验”进入功能页面</li>
+              <li className="ml-4">1. 在主页点击功能模块进入功能页面</li>
               <li className="ml-4">2. 导航至左侧菜单栏的"动态剧情生成"选项</li>
               <li className="ml-4">3. 从资源库导入世界观</li>
               <li className="ml-4">4. 输入剧情概要</li>
@@ -64,7 +64,7 @@ const Document = () => {
         return (
           <div className="p-6">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              AI视觉工坊 (Visual Workshop)
+              AI视觉工坊
             </h2>
             <p className="text-lg text-gray-700 mb-6">
               根据文字描述生成角色艺术和视觉资产。
@@ -73,7 +73,7 @@ const Document = () => {
               使用步骤：
             </h3>
             <ol className="space-y-3 text-base text-gray-700">
-              <li className="ml-4">1. 在主页点击“立即体验”进入功能页面</li>
+              <li className="ml-4">1. 在主页点击功能模块进入功能页面</li>
               <li className="ml-4">2. 导航至左侧菜单栏的"AI视觉工坊"选项</li>
               <li className="ml-4">3. 从资源库导入世界观</li>
               <li className="ml-4">4. 输入角色描述</li>
@@ -87,7 +87,7 @@ const Document = () => {
         return (
           <div className="p-6">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              世界观资源库 (Asset Library)
+              世界观资源库
             </h2>
             <p className="text-lg text-gray-700 mb-6">
               集中管理所有创建的世界、角色和故事的中央存储库。
@@ -96,7 +96,7 @@ const Document = () => {
               使用步骤：
             </h3>
             <ol className="space-y-3 text-base text-gray-700">
-              <li className="ml-4">1. 在主页点击“立即体验”进入功能页面</li>
+              <li className="ml-4">1. 在主页点击功能模块进入功能页面</li>
               <li className="ml-4">2. 导航至左侧菜单栏的"世界观资源库"选项</li>
               <li className="ml-4">3. 浏览已保存的世界观列表</li>
               <li className="ml-4">4. 编辑或删除已保存的世界观</li>

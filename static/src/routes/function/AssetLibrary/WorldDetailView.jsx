@@ -16,11 +16,22 @@ const WorldDetailView = () => {
 
   const {
     data: world,
-    isLoading,
+    isWorldLoading,
     isError,
   } = useQuery({
     queryKey: ["getWorld", worldId],
     queryFn: async () => await worldApi.getWorld({ world_id: worldId }),
+    enabled: !!worldId,
+  });
+  const { data: characters, isCharactersLoading } = useQuery({
+    queryKey: ["getWorldCharacters", worldId],
+    queryFn: async () =>
+      await worldApi.getWorldCharacters({ world_id: worldId }),
+    enabled: !!worldId,
+  });
+  const { data: stories, isStoriesLoading } = useQuery({
+    queryKey: ["getStories", worldId],
+    queryFn: async () => await worldApi.getWorldStories({ world_id: worldId }),
     enabled: !!worldId,
   });
 
@@ -31,8 +42,8 @@ const WorldDetailView = () => {
     }
   }, [isError, navigate]);
 
-  if (isLoading) {
-    return <div className="p-6 text-center">加载中...</div>;
+  if (isWorldLoading || isCharactersLoading || isStoriesLoading) {
+    return <div className="p-6 text-center">世界加载中...</div>;
   }
 
   if (!world) {
@@ -71,7 +82,7 @@ const WorldDetailView = () => {
             <FiImage className="mr-2" /> 人物列表
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {world.characters?.map((character, index) => (
+            {characters?.map((character, index) => (
               <div
                 key={index}
                 className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
@@ -109,7 +120,7 @@ const WorldDetailView = () => {
             <FiBook className="mr-2" /> 剧情列表
           </h2>
           <div className="space-y-3">
-            {world.storys?.map((story, index) => (
+            {stories?.map((story, index) => (
               <div
                 key={index}
                 className="border rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer"

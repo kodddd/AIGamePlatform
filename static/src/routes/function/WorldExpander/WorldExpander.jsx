@@ -18,6 +18,7 @@ import { storyExpanderApi } from "../../../api/storyExpander/storyExpanderApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { worldApi } from "../../../api/world/worldApi";
+import { add, set } from "date-fns";
 
 const WorldExpander = () => {
   // 状态管理
@@ -35,17 +36,20 @@ const WorldExpander = () => {
   });
   const [worldName, setWorldName] = useState("");
   const [isCopying, setIsCopying] = useState(false);
+  const [added, setAdded] = useState(false);
   // const [continuePrompt, setContinuePrompt] = useState(""); // 继续对话的输入
   // const [isContinuing, setIsContinuing] = useState(false); // 继续对话的加载状态
   const navigate = useNavigate();
   useEffect(() => {
     const savedData = sessionStorage.getItem("currentWorldview");
     if (savedData) {
-      const { inputText, output, settings, worldName } = JSON.parse(savedData);
+      const { inputText, output, settings, worldName, added } =
+        JSON.parse(savedData);
       setInputText(inputText);
       setOutput(output);
       setSettings(settings);
       setWorldName(worldName);
+      setAdded(added);
     }
   }, []);
 
@@ -58,12 +62,13 @@ const WorldExpander = () => {
           output,
           settings,
           worldName,
+          added,
         })
       );
     }, 500); // 500ms防抖
 
     return () => clearTimeout(timer);
-  }, [inputText, output, settings, worldName]);
+  }, [inputText, output, settings, worldName, added]);
   // 认证检查
   const { user, isAuthenticated, logout } = useAuth();
   if (!isAuthenticated) {
@@ -107,6 +112,7 @@ const WorldExpander = () => {
       }
     } finally {
       setIsGenerating(false);
+      setAdded(false);
     }
   };
 
@@ -145,6 +151,7 @@ const WorldExpander = () => {
     setIsSaving(true);
 
     try {
+      setAdded(true);
       await worldApi.createWorld({
         base_text: output.background,
         world_name: worldName,
@@ -158,6 +165,7 @@ const WorldExpander = () => {
         toast.error("登录过期请重新登录");
         navigate("/login");
       }
+      setAdded(false);
     } finally {
       setIsSaving(false);
     }
@@ -190,7 +198,7 @@ const WorldExpander = () => {
 
             <button
               onClick={handleSaveToKnowledgeBase}
-              disabled={!output.background || isSaving || !worldName}
+              disabled={!output.background || isSaving || !worldName || added}
               className={`px-4 py-2 rounded-md font-medium flex items-center ${
                 !output.background || isSaving || !worldName
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"

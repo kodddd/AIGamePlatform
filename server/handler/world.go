@@ -140,3 +140,30 @@ func GetWorld(ctx context.Context) error {
 	}
 	return nil
 }
+
+func GetWorldCharacters(ctx context.Context) error {
+	worldID := appctx.Query(ctx, "world_id")
+	result, err := service.GetWorldCharacters(ctx, worldID)
+	if err != nil {
+		render.JSON(ctx, result.Code, result.Message)
+	}
+	if result.Code != 200 {
+		render.JSON(ctx, result.Code, result.Message)
+	} else {
+		render.JSON(ctx, result.Code, result.Characters)
+	}
+	return nil
+}
+func GetWorldStories(ctx context.Context) error {
+	worldID := appctx.Query(ctx, "world_id")
+	result, err := service.GetWorldStories(ctx, worldID)
+	if err != nil {
+		render.JSON(ctx, result.Code, result.Message)
+	}
+	if result.Code != 200 {
+		render.JSON(ctx, result.Code, result.Message)
+	} else {
+		render.JSON(ctx, result.Code, result.Storys)
+	}
+	return nil
+}

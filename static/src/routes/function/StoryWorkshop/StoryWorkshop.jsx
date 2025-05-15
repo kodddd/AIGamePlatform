@@ -32,6 +32,7 @@ const StoryWorkshop = () => {
     casualty: 1,
     creativity: 0,
   });
+  const [added, setAdded] = useState(false);
   const navigate = useNavigate();
   const textareaRef = useRef(null);
   const [showWorldSelecter, setShowWorldSelecter] = useState(false);
@@ -42,13 +43,20 @@ const StoryWorkshop = () => {
   useEffect(() => {
     const savedData = sessionStorage.getItem("currentStory");
     if (savedData) {
-      const { prompt, generatedStory, settings, storyTitle, selectedWorld } =
-        JSON.parse(savedData);
+      const {
+        prompt,
+        generatedStory,
+        settings,
+        storyTitle,
+        selectedWorld,
+        added,
+      } = JSON.parse(savedData);
       setPrompt(prompt);
       setGeneratedStory(generatedStory);
       setSettings(settings);
       setStoryTitle(storyTitle);
       setSelectedWorld(selectedWorld);
+      setAdded(added);
     }
   }, []);
   useEffect(() => {
@@ -61,12 +69,13 @@ const StoryWorkshop = () => {
           settings,
           storyTitle,
           selectedWorld,
+          added,
         })
       );
     }, 500); // 500ms防抖
 
     return () => clearTimeout(timer);
-  }, [prompt, generatedStory, settings, storyTitle, selectedWorld]);
+  }, [prompt, generatedStory, settings, storyTitle, selectedWorld, added]);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
@@ -92,6 +101,7 @@ const StoryWorkshop = () => {
       }
     } finally {
       setIsGenerating(false);
+      setAdded(false);
     }
   };
 
@@ -111,9 +121,9 @@ const StoryWorkshop = () => {
     };
 
     try {
-      const response = await worldApi.addStory(storyData);
+      setAdded(true);
+      await worldApi.addStory(storyData);
       toast.success("剧情保存成功");
-      console.log("Story saved:", response);
     } catch (error) {
       if (error.status == 401) {
         navigate("/login");
@@ -122,6 +132,7 @@ const StoryWorkshop = () => {
         toast.error("保存剧情失败");
       }
       console.error("Error saving story:", error);
+      setAdded(false);
     }
   };
 
@@ -290,7 +301,7 @@ const StoryWorkshop = () => {
                   {generatedStory && (
                     <button
                       onClick={handleSaveStory}
-                      disabled={!storyTitle}
+                      disabled={!storyTitle || added}
                       className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center"
                     >
                       <FiSave className="mr-2" /> 保存剧情

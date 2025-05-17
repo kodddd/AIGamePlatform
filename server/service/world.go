@@ -2,7 +2,7 @@ package service
 
 import (
 	"AIGamePlatform/server/appctx"
-	mongo "AIGamePlatform/server/db"
+	"AIGamePlatform/server/db/mongo"
 	"AIGamePlatform/server/model"
 	"context"
 	"time"

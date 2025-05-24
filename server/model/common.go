@@ -19,4 +19,9 @@ type (
 		Message string `json:"message"`
 		Code    int    `json:"code"`
 	}
+	AsyncResponse struct {
+		Message string `json:"message"`
+		Code    int    `json:"code"`
+		TaskId  string `json:"task_id"` // 任务ID
+	}
 )

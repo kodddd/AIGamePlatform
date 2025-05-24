@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func ExpandStory(ctx context.Context, request *model.ExpandStoryRequest) (*model.ExpandStoryResult, error) {
+func ExpandStory(ctx context.Context, request *model.ExpandStoryRequest,jobID string) (*model.ExpandStoryResult, error) {
 	response := model.ExpandStoryResponse{}
 	agentErrorResult := model.ExpandStoryResult{
 		Code:    500,

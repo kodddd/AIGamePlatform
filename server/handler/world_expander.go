@@ -5,6 +5,7 @@ import (
 	"AIGamePlatform/server/model"
 	"AIGamePlatform/server/render"
 	"AIGamePlatform/server/service"
+	"AIGamePlatform/server/utils"
 	"context"
 )
 
@@ -14,14 +15,16 @@ func ExpandStory(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	result, err := service.ExpandStory(ctx, &request)
-	if result.Code != 200 {
-		render.JSON(ctx, result.Code, model.BasicErrorData{
-			Message: result.Message,
-			Code:    result.Code,
-		})
-	} else {
-		render.JSON(ctx, result.Code, *result.Response)
+	taskID:=utils.GenerateTaskID()
+	go service.ExpandStory(ctx, &request,taskID)
+	err=utils.SaveTaskStatus(ctx,taskID,"pending","")
+	if err!=nil{
+		return err
 	}
-	return err
+	render.JSON(ctx,200,model.AsyncResponse{
+		TaskId: taskID,
+		Message: "accepted",
+		Code: 202,
+	})
+	return nil
 }

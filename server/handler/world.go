@@ -60,7 +60,7 @@ func WorldList(ctx context.Context) error {
 
 func DeleteWorld(ctx context.Context) error {
 	var request model.DeleteWorldRequest
-	id := appctx.Query(ctx, "id")
+	id := appctx.Query(ctx, "world_id")
 	request.Id = id
 	result, err := service.DeleteWorld(ctx, &request)
 	if err != nil {
